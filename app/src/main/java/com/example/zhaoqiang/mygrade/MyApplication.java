@@ -10,7 +10,7 @@ import com.hyphenate.chat.EMOptions;
  * at 16:06
  */
 
-public class MyApplication extends Application{
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

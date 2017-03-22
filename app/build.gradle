@@ -33,6 +33,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.mcxiaoke.volley:library:1.0.19'
     compile files('libs/hyphenatechat_3.2.2.jar')
 }
