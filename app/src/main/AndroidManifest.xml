@@ -22,7 +22,7 @@
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="MyGrade"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -51,7 +51,6 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,6 +58,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".act.LoginActivity"/>
+        <activity android:name=".act.Baseactivity"/>
+        <activity android:name=".act.RegisterActivity"/>
+        <activity android:name=".act.SplashActivity"/>
+        <activity android:name=".act.ConversationActivity"/>
+        <activity android:name=".act.SetActivity"/>
 
     </application>
 
