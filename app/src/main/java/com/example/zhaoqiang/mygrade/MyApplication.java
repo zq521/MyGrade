@@ -2,11 +2,8 @@ package com.example.zhaoqiang.mygrade;
 
 import android.app.Application;
 
-import com.example.zhaoqiang.mygrade.help.User;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
-
-import java.util.Map;
 
 /**
  * Created by 轩韩子 on 2017/3/22.
@@ -15,7 +12,7 @@ import java.util.Map;
 
 public class MyApplication extends Application {
 
-    private Map<String, User> contactList;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,5 +27,6 @@ public class MyApplication extends Application {
         EMClient.getInstance().setDebugMode(true);
 
     }
+
 
 }

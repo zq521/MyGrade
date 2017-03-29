@@ -17,6 +17,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--短信权限-->
+    <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:name=".MyApplication"
@@ -51,19 +54,27 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".act.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".act.LoginActivity"/>
-        <activity android:name=".act.Baseactivity"/>
-        <activity android:name=".act.RegisterActivity"/>
-        <activity android:name=".act.SplashActivity"/>
-        <activity android:name=".act.ConversationActivity"/>
-        <activity android:name=".act.SetActivity"/>
+        <activity
+            android:name=".act.LoginActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".act.Baseactivity" />
+        <activity android:name=".act.RegisterActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".act.ConversationActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".act.SetActivity" />
+        <activity android:name=".act.AddConActivity" />
 
     </application>
 

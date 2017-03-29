@@ -30,7 +30,7 @@
             android:textSize="30sp" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40sp"
@@ -44,13 +44,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <EditText
             android:layout_width="300sp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30sp"
-            android:hint="🔍搜索" />
+            android:hint="搜索" />
+        <Button
+            android:id="@+id/btn_soso_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="搜索"/>
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +66,7 @@
         android:orientation="vertical">
 
         <ListView
-            android:id="@+id/listview_con"
+            android:id="@+id/listview_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"></ListView>
 

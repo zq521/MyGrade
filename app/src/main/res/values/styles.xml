@@ -6,6 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Xhz" parent="Theme.AppCompat.Dialog">
+        <!--是否显示阴影-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--背景-->
+        <item name="android:windowBackground">@android:color/black</item>
+        <!--进度颜色-->
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 </resources>

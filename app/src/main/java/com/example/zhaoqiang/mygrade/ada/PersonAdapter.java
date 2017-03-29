@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
-import com.example.zhaoqiang.mygrade.help.User;
 
 import java.util.List;
 
@@ -17,24 +16,28 @@ import java.util.List;
  * at 18:27
  */
 
-public class PersonAdapter extends BaseAdapter {
+public class PersonAdapter extends BaseAdapter{
     private Context context;
-    private List<User> users;
+    private List<EaseUser> users;
     private LayoutInflater inflater;
 
-    public PersonAdapter(Context context, List<User> users) {
+    public PersonAdapter(Context context_, List<EaseUser> users) {
 
-        this.context = context;
+        this.context = context_;
         this.users = users;
+        inflater = LayoutInflater.from(context);
+
     }
 
     @Override
     public int getCount() {
+
         return users.size();
     }
 
     @Override
-    public User getItem(int position) {
+    public EaseUser getItem(int position) {
+
         return users.get(position);
     }
 
@@ -47,13 +50,17 @@ public class PersonAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_main, parent, false);
+
+            convertView = inflater.inflate(R.layout.item_consersation, parent, false);
 
         }
+
         TextView tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-        tv_name.setText(getItem(position).getName());
+        tv_name.setText(getItem(position).getUsername());
+
         return convertView;
     }
 
-
 }
+
+
