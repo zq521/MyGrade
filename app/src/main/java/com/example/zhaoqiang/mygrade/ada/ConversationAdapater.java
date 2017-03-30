@@ -14,7 +14,8 @@ import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;
 
-import static com.example.zhaoqiang.mygrade.R.id.btn1;
+
+
 
 /**
  * Created by 轩韩子 on 2017/3/26.
@@ -49,56 +50,57 @@ public class ConversationAdapater extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        ViewHolder holder=null;
+        ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_consersation, parent, false);
             holder = new ViewHolder();
-            holder.image_per_mes= (ImageView) convertView.findViewById(R.id.image_per_mes);
-            holder.name_text = (TextView) convertView.findViewById(R.id.name_text);
-            holder.mes_text = (TextView) convertView.findViewById(R.id.mes_text);
+            holder.con_tv_name = (TextView) convertView.findViewById(R.id.con_tv_name);
+            holder.con_tv_msg = (TextView) convertView.findViewById(R.id.con_tv_msg);
+            holder.unread_msg_number = (TextView) convertView.findViewById(R.id.unread_msg_number);
+            holder.con_image_per_mes = (ImageView) convertView.findViewById(R.id.con_image_per_mes);
             //将Holder存储到convertView中
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-            holder.name_text.setText(list.get(position));
-            holder.mes_text.setText(list.get(position));
-
-            holder.name_text.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context,"vv",Toast.LENGTH_SHORT).show();
-                }
-            });
+        holder.con_tv_name.setText(list.get(position));
+        holder.con_tv_msg.setText(list.get(position));
+        holder.unread_msg_number.setText("");
+        //给名字设置点击事件
+        holder.con_tv_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "你选择了该联系人", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //置顶该列
         final View finalConvertView = convertView;
-        convertView.findViewById(btn1).setOnClickListener(new View.OnClickListener() {
+        convertView.findViewById(R.id.con_btn_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 list.add(0, list.get(position));
                 // 置顶后list.size增加一 所以要position+1
                 list.remove(position + 1);
                 notifyDataSetChanged();
-
+                ((SwipeMenuLayout) finalConvertView).quickClose();
+            }
+        });
+        //删除该列
+        convertView.findViewById(R.id.con_btn_remove).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.remove(position);
+                notifyDataSetChanged();
                 ((SwipeMenuLayout) finalConvertView).quickClose();
             }
         });
 
-            convertView.findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    list.remove(position);
-                    notifyDataSetChanged();
-                    ((SwipeMenuLayout) finalConvertView).quickClose();
-                }
-            });
-
         return convertView;
     }
-
+    //内部类
     class ViewHolder {
-        TextView name_text,mes_text;
-        ImageView image_per_mes;
+        TextView con_tv_name, con_tv_msg, unread_msg_number;
+        ImageView con_image_per_mes;
     }
 
 }

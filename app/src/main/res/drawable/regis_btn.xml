@@ -2,12 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!--没有焦点时的背景图片-->
     <item
-        android:drawable="@drawable/bu2"
+        android:drawable="@drawable/yin"
         android:state_window_focused="false" />
 
     <!--非触摸模式下点击时的背景图片-->
     <item
-        android:drawable="@drawable/bu1"
+        android:drawable="@drawable/hei"
         android:state_focused="false"
         android:state_pressed="true" />
 </selector>

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.animation.AlphaAnimation;
+import android.widget.RelativeLayout;
 
 import com.example.zhaoqiang.mygrade.MainActivity;
 import com.example.zhaoqiang.mygrade.R;
@@ -16,12 +18,18 @@ import com.hyphenate.chat.EMClient;
  */
 
 public class SplashActivity extends AppCompatActivity {
-    private static final int sleepTime = 3000;
+    private RelativeLayout rootLayout;
+    private static final int sleepTime = 5000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
        setContentView(R.layout.splash_act);
+
+        rootLayout = (RelativeLayout) findViewById(R.id.splash_root);
+        AlphaAnimation animation = new AlphaAnimation(0.3f, 1.0f);
+        animation.setDuration(3000);
+        rootLayout.startAnimation(animation);
     }
     @Override
     protected void onStart() {
@@ -29,15 +37,13 @@ public class SplashActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 if (EMClient.getInstance().isLoggedInBefore()) {
-
                     long start = System.currentTimeMillis();
-
                     long costTime = System.currentTimeMillis() - start;
                     //等待sleeptime时长
                     if (sleepTime - costTime > 0) {
                         try {
                             Thread.sleep(sleepTime - costTime);
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -47,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
                 }else {
                     try {
                         Thread.sleep(sleepTime);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                     }
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();

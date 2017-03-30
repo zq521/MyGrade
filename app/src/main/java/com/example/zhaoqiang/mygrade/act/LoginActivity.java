@@ -31,25 +31,31 @@ import static android.text.TextUtils.isEmpty;
  */
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText username, password;
+    private String user, pwd;
     private CheckBox checkBox;
-    String user, pwd;
+    private SharedPreferences sp;
     private boolean login = false;
-    SharedPreferences sp;
+    private EditText username, password;
+    private ProDialog proDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_act);
+        //初始化控件
         init();
+        //判断之前是否登陆过，并如果用户名改变，则清空密码
         logBefore();
+        //密码显示与隐藏监听
         checkBox();
 
     }
+
     public void init() {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         checkBox = (CheckBox) findViewById(R.id.checkBox1);
+        //初始化sp数据库
         sp = this.getSharedPreferences("passwordsave", MODE_PRIVATE);
         //光标位置
         username.setSelection(username.getText().toString().length());
@@ -59,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
         // 如果登录成功过，直接进入主页面
         if (EMClient.getInstance().isLoggedInBefore()) {
             // ** 免登陆情况 加载所有本地群和会话
-            //不是必须的，不加sdk也会自动异步去加载(不会重复加载)；
             //加上的话保证进了主页面会话和群组都已经load完毕
             EMClient.getInstance().groupManager().loadAllGroups();
             EMClient.getInstance().chatManager().loadAllConversations();
@@ -84,28 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    //显示或隐藏密码
-    private void checkBox() {
-
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //如果选中，显示密码
-                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    //否则隐藏密码
-                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                }
-            }
-        });
-    }
-
-    /**
-     * 登陆
-     */
-    ProDialog pr;
-
+    //登陆
     public void login(View view) {
         if (!isNetWorkConnected(this)) {
             Toast.makeText(this, "网络不可用", Toast.LENGTH_SHORT).show();
@@ -125,8 +109,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         //进度条显示
-        pr = new ProDialog(this, R.style.Xhz);
-        pr.show();
+        proDialog = new ProDialog(this, R.style.Xhz);
+        proDialog.show();
 
         // 调用sdk登陆方法登陆聊天服务器
         EMClient.getInstance().login(user, pwd, new EMCallBack() {
@@ -136,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
                 //关闭进度
-                pr.cancel();
+                proDialog.cancel();
             }
 
             @Override
@@ -148,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onError(final int code, final String message) {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        pr.cancel();
+                        proDialog.cancel();
                         Toast.makeText(getApplicationContext(), "登陆失败,密码或账号错误", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -156,9 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 注册
-     */
+    //注册
     public void register(View view) {
         startActivityForResult(new Intent(this, RegisterActivity.class), 0);
     }
@@ -171,9 +153,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 检测网络是否可用
-     */
+    //检测网络是否可用
     public static boolean isNetWorkConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context
@@ -186,5 +166,18 @@ public class LoginActivity extends AppCompatActivity {
 
         return false;
     }
-
+    private void checkBox() {
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //如果选中，显示密码
+                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    //否则隐藏密码
+                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
+    }
 }

@@ -15,10 +15,10 @@
         android:layout_height="54dp"
         android:layout_margin="20dp"
         android:layout_marginTop="20dp"
-        android:background="#000"
+        android:background="@drawable/regis_btn"
         android:padding="10dp"
         android:text="个人消息"
-        android:textColor="#fff"
+        android:textColor="#000"
         android:textSize="18sp" />
     <Button
         android:id="@+id/btn_alter"
@@ -26,10 +26,10 @@
         android:layout_height="54dp"
         android:layout_margin="20dp"
         android:layout_marginTop="20dp"
-        android:background="#000"
+        android:background="@drawable/regis_btn"
         android:padding="10dp"
         android:text="修改昵称"
-        android:textColor="#fff"
+        android:textColor="#000"
         android:textSize="18sp" />
     <Button
         android:id="@+id/btn_image"
@@ -37,10 +37,10 @@
         android:layout_height="54dp"
         android:layout_margin="20dp"
         android:layout_marginTop="20dp"
-        android:background="#000"
+        android:background="@drawable/regis_btn"
         android:padding="10dp"
         android:text="设置头像"
-        android:textColor="#fff"
+        android:textColor="#000"
         android:textSize="18sp" />
     <Button
         android:id="@+id/btn_logout"
@@ -48,10 +48,10 @@
         android:layout_height="54dp"
         android:layout_margin="20dp"
         android:layout_marginTop="20dp"
-        android:background="#000"
+        android:background="@drawable/regis_btn"
         android:padding="10dp"
         android:text="退出"
-        android:textColor="#fff"
+        android:textColor="#000"
         android:textSize="18sp" />
 
     </LinearLayout>
@@ -67,9 +67,9 @@
             android:id="@+id/btn_conversation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#000"
+            android:background="@drawable/regis_btn"
             android:text="会话列表"
-            android:textColor="#fff"
+            android:textColor="#000"
             android:textSize="18sp" />
 
         <Button
@@ -77,9 +77,9 @@
             android:id="@+id/btn_address_book"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#000"
+            android:background="@drawable/regis_btn"
             android:text="通讯录"
-            android:textColor="#fff"
+            android:textColor="#000"
             android:textSize="18sp" />
 
         <Button
@@ -87,9 +87,9 @@
             android:id="@+id/btn_set"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#000"
+            android:background="@drawable/regis_btn"
             android:text="设置"
-            android:textColor="#fff"
+            android:textColor="#000"
             android:textSize="18sp" />
     </LinearLayout>
 

@@ -1,24 +1,23 @@
 package com.example.zhaoqiang.mygrade;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.zhaoqiang.mygrade.act.AddConActivity;
+import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.act.ConversationActivity;
 import com.example.zhaoqiang.mygrade.act.SetActivity;
-import com.example.zhaoqiang.mygrade.ada.EaseUser;
 import com.example.zhaoqiang.mygrade.ada.PersonAdapter;
+import com.example.zhaoqiang.mygrade.help.Refresh;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 轩韩子 on 2017/3/23.
@@ -27,11 +26,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btn_conversation, btn_address_book, btn_set, button_add;
-
+    private View view;
+    private Refresh swipe_main;
     protected ListView listview;
-    private PersonAdapter adapter;
-    private Map<String, EaseUser> contactsMap;
-    protected List<EaseUser> contactList = new ArrayList<EaseUser>();
+    private PersonAdapter personAdapter;
+    protected ArrayList<String> list = new ArrayList<>();
 
 
     @Override
@@ -39,15 +38,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        listview = (ListView) this.findViewById(R.id.listview_main);
-
-        adapter = new PersonAdapter(this, contactList);
-        listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra("username", adapter.getItem(arg2).getUsername()));
+                startActivity(new Intent(MainActivity.this, ChatActivity.class));
                 finish();
             }
 
@@ -65,6 +60,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_address_book.setOnClickListener(this);
         btn_set.setOnClickListener(this);
         button_add.setOnClickListener(this);
+        swipe_main= (Refresh) findViewById(R.id.swipe_main);
+        listview = (ListView) this.findViewById(R.id.listview_main);
+        personAdapter = new PersonAdapter(this,list);
+        //加载foot view布局
+        view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.con_new_item_pro, null, false);
+        listview.setAdapter(personAdapter);
+        setUpAndDown();
+    }
+
+    private void setUpAndDown() {
+        //下拉
+        swipe_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                list.add(0,"我是下拉出来的");
+                personAdapter.notifyDataSetChanged();
+                swipe_main.setRefreshing(false);
+            }
+        });
+        //上拉
+        swipe_main.setSetLoadlistener(new Refresh.loadListener() {
+            @Override
+            public void load() {
+                swipe_main.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        list.add("我是上拉出来的");
+                        personAdapter.notifyDataSetChanged();
+                        swipe_main.setLoadView(false);
+                    }
+                },1500);
+            }
+
+            @Override
+            public void setFootView(boolean loading) {
+                if (loading){
+                    listview.removeFooterView(view);
+                    listview.addFooterView(view);
+                    listview.setSelection(personAdapter.getCount());
+                }else {
+                    listview.removeFooterView(view);
+                }
+            }
+        });
+
 
     }
 
