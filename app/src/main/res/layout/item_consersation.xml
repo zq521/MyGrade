@@ -4,10 +4,12 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    app:ios="false">
+    app:ios="false"
+    >
     <!--关闭阻塞式-->
 
     <RelativeLayout
+        android:id="@+id/chat_item"
         android:layout_marginTop="10sp"
         android:layout_width="match_parent"
         android:layout_height="60sp"
@@ -66,7 +68,7 @@
                 android:singleLine="true"
                 android:textColor="#8C8C8C"
                 android:textSize="16sp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
         </LinearLayout>
         </LinearLayout>
 

@@ -43,7 +43,7 @@ public class Refresh extends SwipeRefreshLayout implements AbsListView.OnScrollL
         //获取子控件个数
         int childs = getChildCount();
         //判断子控件至少有一个
-        if (childs > 0) {
+        if (childs >0) {
             //获取第一个子控件
             View child = getChildAt(0);
             //判断 第一个子控件 是不是listview 对象

@@ -16,12 +16,16 @@ import com.example.zhaoqiang.mygrade.act.ConversationActivity;
 import com.example.zhaoqiang.mygrade.act.SetActivity;
 import com.example.zhaoqiang.mygrade.ada.PersonAdapter;
 import com.example.zhaoqiang.mygrade.help.Refresh;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 轩韩子 on 2017/3/23.
  * at 21:25
+ * 联系人页面
  */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,20 +40,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.act_main);
         init();
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //获取好友列表
+//         getPerson();
 
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                startActivity(new Intent(MainActivity.this, ChatActivity.class));
-                finish();
-            }
-
-        });
 
     }
 
+    //初始化控件
     public void init() {
         listview = (ListView) findViewById(R.id.listview_main);
         btn_conversation = (Button) findViewById(R.id.btn_conversation);
@@ -60,21 +59,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_address_book.setOnClickListener(this);
         btn_set.setOnClickListener(this);
         button_add.setOnClickListener(this);
-        swipe_main= (Refresh) findViewById(R.id.swipe_main);
+        swipe_main = (Refresh) findViewById(R.id.swipe_main);
         listview = (ListView) this.findViewById(R.id.listview_main);
-        personAdapter = new PersonAdapter(this,list);
+        personAdapter = new PersonAdapter(this, list);
         //加载foot view布局
-        view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.con_new_item_pro, null, false);
-        listview.setAdapter(personAdapter);
+        view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.progress_up_item, null, false);
+
         setUpAndDown();
+
+
+           //item点击事件
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+                startActivity(new Intent(MainActivity.this, ChatActivity.class));
+            }
+
+        });
     }
+
 
     private void setUpAndDown() {
         //下拉
         swipe_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                list.add(0,"我是下拉出来的");
+                list.add(0, "我是下拉出来的");
                 personAdapter.notifyDataSetChanged();
                 swipe_main.setRefreshing(false);
             }
@@ -90,16 +101,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         personAdapter.notifyDataSetChanged();
                         swipe_main.setLoadView(false);
                     }
-                },1500);
+                }, 1500);
             }
 
             @Override
             public void setFootView(boolean loading) {
-                if (loading){
+                if (loading) {
                     listview.removeFooterView(view);
                     listview.addFooterView(view);
                     listview.setSelection(personAdapter.getCount());
-                }else {
+                } else {
                     listview.removeFooterView(view);
                 }
             }
@@ -108,7 +119,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //点击事件
+    /**
+     * 点击事件
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -126,9 +139,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.button_add:
                 startActivity(new Intent(this, AddConActivity.class));
-                finish();
                 break;
         }
     }
 
+    /**
+     * 获取好友列表
+     */
+    private void getPerson() {
+        try {
+            List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+            list.add(String.valueOf(usernames));
+            personAdapter.notifyDataSetChanged();
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+        }
+
+        listview.setAdapter(personAdapter);
+    }
 }

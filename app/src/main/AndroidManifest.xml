@@ -75,6 +75,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".act.SetActivity" />
         <activity android:name=".act.AddConActivity" />
+        <activity android:name=".act.ChatActivity"/>
 
     </application>
 

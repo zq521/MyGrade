@@ -1,4 +1,4 @@
-package com.example.zhaoqiang.mygrade.frag;
+package com.example.zhaoqiang.mygrade.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,12 +18,12 @@ public class FragmenMent extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragmen_ment, container, false);
+        View view = inflater.inflate(R.layout.draw_frag, container, false);
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

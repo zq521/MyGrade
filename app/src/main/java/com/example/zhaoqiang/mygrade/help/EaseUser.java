@@ -1,4 +1,4 @@
-package com.example.zhaoqiang.mygrade.ada;
+package com.example.zhaoqiang.mygrade.help;
 
 import com.hyphenate.chat.EMContact;
 

@@ -28,7 +28,7 @@ public class SetActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.set_act);
+        setContentView(R.layout.act_set);
         init();
     }
 
@@ -124,8 +124,9 @@ public class SetActivity extends AppCompatActivity implements View.OnClickListen
             public void onSuccess() {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        finish();
                         startActivity(new Intent(SetActivity.this, LoginActivity.class));
+                        finish();
+                        Toast.makeText(SetActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -141,7 +142,7 @@ public class SetActivity extends AppCompatActivity implements View.OnClickListen
 
                     @Override
                     public void run() {
-                        Toast.makeText(SetActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SetActivity.this, "退出失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -26,7 +26,7 @@ public class AddConActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_person);
+        setContentView(R.layout.act_add_person);
 
 
         et_username = (EditText) this.findViewById(R.id.et_username);
@@ -38,10 +38,8 @@ public class AddConActivity extends AppCompatActivity {
                 String username = et_username.getText().toString().trim();
 
                 if (TextUtils.isEmpty(username)) {
-
                     Toast.makeText(getApplicationContext(), "请输入内容...", Toast.LENGTH_SHORT).show();
                     return;
-
                 }
                 addContact(username);
             }
@@ -56,7 +54,9 @@ public class AddConActivity extends AppCompatActivity {
      *
      * @param
      */
-    public void addContact(final String username) {
+
+
+    public void addContact(final String usernamer) {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("正在查找");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -66,8 +66,7 @@ public class AddConActivity extends AppCompatActivity {
             public void run() {
 
                 try {
-                    // demo写死了个reason，实际应该让用户手动填入
-                    EMClient.getInstance().contactManager().addContact(username,"");
+                    EMClient.getInstance().contactManager().addContact(usernamer,"");
                     runOnUiThread(new Runnable() {
                         public void run() {
                             progressDialog.dismiss();

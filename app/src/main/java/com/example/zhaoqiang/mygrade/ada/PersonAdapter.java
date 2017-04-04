@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
+import com.example.zhaoqiang.mygrade.help.EaseUser;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;

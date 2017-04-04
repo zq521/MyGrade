@@ -7,14 +7,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.zhaoqiang.mygrade.R;
+import com.example.zhaoqiang.mygrade.callback.CallListener;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;
-
-
 
 
 /**
@@ -25,9 +26,19 @@ import java.util.ArrayList;
 
 public class ConversationAdapater extends BaseAdapter {
     private Context context;
-    private ArrayList<String> list = new ArrayList<>();
+    private CallListener callListener;
+    private ArrayList<EMConversation> list;
 
-    public ConversationAdapater(Context context, ArrayList<String> list) {
+
+
+
+
+    public void setCallListener(CallListener callListener) {
+        this.callListener = callListener;
+    }
+
+
+    public ConversationAdapater(Context context, ArrayList<EMConversation> list) {
         this.context = context;
         this.list = list;
 
@@ -39,8 +50,8 @@ public class ConversationAdapater extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
-        return null;
+    public EMConversation getItem(int position) {
+        return list.get(position);
     }
 
     @Override
@@ -58,21 +69,50 @@ public class ConversationAdapater extends BaseAdapter {
             holder.con_tv_msg = (TextView) convertView.findViewById(R.id.con_tv_msg);
             holder.unread_msg_number = (TextView) convertView.findViewById(R.id.unread_msg_number);
             holder.con_image_per_mes = (ImageView) convertView.findViewById(R.id.con_image_per_mes);
+            holder.chat_item=convertView.findViewById(R.id.chat_item);
             //将Holder存储到convertView中
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.con_tv_name.setText(list.get(position));
-        holder.con_tv_msg.setText(list.get(position));
-        holder.unread_msg_number.setText("");
+
+        //获取当前item的数据内容
+        EMConversation emConversation = getItem(position);
+        //从当前会话对象中 获取，最后一条消息的对象
+        EMMessage latMessage = emConversation.getLastMessage();
+        //从最后一次消息对象中，获取该消息的消息类型
+
+        EMMessage.Type type = latMessage.getType();
+        switch (type) {
+            case TXT:
+                //获取消息体并强转成文本消息类型体
+                EMTextMessageBody textMessageBody = (EMTextMessageBody) latMessage.getBody();
+                //从消息体中拿到消息内容 并 设置给 控件
+                holder.con_tv_msg.setText(textMessageBody.getMessage());
+                break;
+            case IMAGE:
+                holder.con_tv_msg.setText("[图片]");
+                break;
+            case VIDEO:
+                holder.con_tv_msg.setText("[视频]");
+                break;
+
+        }
+        //设置接收消息的名字
+        holder.con_tv_name.setText(emConversation.getUserName());
+        //设置消息数目
+//        holder.unread_msg_number.setText(emConversation.getUnredMsgCount());
         //给名字设置点击事件
-        holder.con_tv_name.setOnClickListener(new View.OnClickListener() {
+
+        holder.chat_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "你选择了该联系人", Toast.LENGTH_SHORT).show();
+                if (callListener != null) {
+                    callListener.ItemClick(position);
+                }
             }
         });
+
         //置顶该列
         final View finalConvertView = convertView;
         convertView.findViewById(R.id.con_btn_top).setOnClickListener(new View.OnClickListener() {
@@ -89,9 +129,9 @@ public class ConversationAdapater extends BaseAdapter {
         convertView.findViewById(R.id.con_btn_remove).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.remove(position);
-                notifyDataSetChanged();
-                ((SwipeMenuLayout) finalConvertView).quickClose();
+                if (callListener != null) {
+                    callListener.Click(position);
+                }
             }
         });
 
@@ -99,8 +139,9 @@ public class ConversationAdapater extends BaseAdapter {
     }
     //内部类
     class ViewHolder {
-        TextView con_tv_name, con_tv_msg, unread_msg_number;
-        ImageView con_image_per_mes;
+        private View chat_item;
+        private TextView con_tv_name, con_tv_msg, unread_msg_number;
+        private ImageView con_image_per_mes;
     }
 
 }

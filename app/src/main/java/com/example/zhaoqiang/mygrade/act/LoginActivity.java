@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.example.zhaoqiang.mygrade.MainActivity;
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.help.ProDialog;
+import com.example.zhaoqiang.mygrade.help.SPUtils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
@@ -41,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_act);
+        setContentView(R.layout.act_login);
         //初始化控件
         init();
         //判断之前是否登陆过，并如果用户名改变，则清空密码
@@ -55,10 +57,12 @@ public class LoginActivity extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         checkBox = (CheckBox) findViewById(R.id.checkBox1);
-        //初始化sp数据库
-        sp = this.getSharedPreferences("passwordsave", MODE_PRIVATE);
+
+        username.setText(SPUtils.getLastUserName(this));
+        password.setText(SPUtils.getLastPassword(this));
         //光标位置
         username.setSelection(username.getText().toString().length());
+        password.setSelection(password.getText().toString().length());
     }
 
     private void logBefore() {
@@ -98,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         //获取输入的数据
         user = username.getText().toString();
         pwd = password.getText().toString();
+        Log.e(user,pwd);
         //判断密码正确错误
         if (isEmpty(user)) {
             Toast.makeText(LoginActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
@@ -130,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(final int code, final String message) {
+                Log.e("code","message="+message);
                 runOnUiThread(new Runnable() {
                     public void run() {
                         proDialog.cancel();
@@ -166,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
 
         return false;
     }
+
     private void checkBox() {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

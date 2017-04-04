@@ -35,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_act);
+        setContentView(R.layout.act_register);
         //初始化控件
         init();
 

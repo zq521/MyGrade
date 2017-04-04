@@ -19,7 +19,7 @@ import com.hyphenate.chat.EMClient;
 
 public class SplashActivity extends AppCompatActivity {
     private RelativeLayout rootLayout;
-    private static final int sleepTime = 5000;
+    private static final int sleepTime = 3000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class SplashActivity extends AppCompatActivity {
 
         rootLayout = (RelativeLayout) findViewById(R.id.splash_root);
         AlphaAnimation animation = new AlphaAnimation(0.3f, 1.0f);
-        animation.setDuration(3000);
+        animation.setDuration(2500);
         rootLayout.startAnimation(animation);
     }
     @Override
