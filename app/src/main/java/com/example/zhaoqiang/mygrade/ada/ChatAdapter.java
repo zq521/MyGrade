@@ -74,7 +74,6 @@ public class ChatAdapter extends BaseAdapter {
                 break;
         }
 
-
         return convertView;
     }
 

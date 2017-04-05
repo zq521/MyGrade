@@ -23,6 +23,7 @@
             />
 
         <TextView
+            android:textIsSelectable="true"
             android:id="@+id/chat_other_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,6 +62,7 @@
             />
 
         <TextView
+            android:textIsSelectable="true"
             android:id="@+id/chat_my_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
