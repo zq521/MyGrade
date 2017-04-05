@@ -1,26 +1,15 @@
 package com.example.zhaoqiang.mygrade;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 
-import com.example.zhaoqiang.mygrade.act.AddConActivity;
-import com.example.zhaoqiang.mygrade.act.ChatActivity;
-import com.example.zhaoqiang.mygrade.act.ConversationActivity;
-import com.example.zhaoqiang.mygrade.act.SetActivity;
-import com.example.zhaoqiang.mygrade.ada.PersonAdapter;
-import com.example.zhaoqiang.mygrade.help.Refresh;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.zhaoqiang.mygrade.fragment.ConversationFragment;
+import com.example.zhaoqiang.mygrade.fragment.PersonFragment;
+import com.example.zhaoqiang.mygrade.fragment.SetFragment;
 
 /**
  * Created by 轩韩子 on 2017/3/23.
@@ -29,93 +18,31 @@ import java.util.List;
  */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btn_conversation, btn_address_book, btn_set, button_add;
-    private View view;
-    private Refresh swipe_main;
-    protected ListView listview;
-    private PersonAdapter personAdapter;
-    protected ArrayList<String> list = new ArrayList<>();
+    private Button btn_conversation, btn_address_book, btn_set;
+    private ConversationFragment conversationFragment;
+    private PersonFragment personFragment;
+    private SetFragment setFragment;
+    FragmentManager fragmentManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_main);
+        setContentView(R.layout.main_activity);
         init();
-        //获取好友列表
-//         getPerson();
-
 
     }
 
     //初始化控件
     public void init() {
-        listview = (ListView) findViewById(R.id.listview_main);
         btn_conversation = (Button) findViewById(R.id.btn_conversation);
         btn_address_book = (Button) findViewById(R.id.btn_address_book);
         btn_set = (Button) findViewById(R.id.btn_set);
-        button_add = (Button) findViewById(R.id.button_add);
         btn_conversation.setOnClickListener(this);
         btn_address_book.setOnClickListener(this);
         btn_set.setOnClickListener(this);
-        button_add.setOnClickListener(this);
-        swipe_main = (Refresh) findViewById(R.id.swipe_main);
-        listview = (ListView) this.findViewById(R.id.listview_main);
-        personAdapter = new PersonAdapter(this, list);
-        //加载foot view布局
-        view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.progress_up_item, null, false);
-
-        setUpAndDown();
-
-
-           //item点击事件
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                startActivity(new Intent(MainActivity.this, ChatActivity.class));
-            }
-
-        });
-    }
-
-
-    private void setUpAndDown() {
-        //下拉
-        swipe_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                list.add(0, "我是下拉出来的");
-                personAdapter.notifyDataSetChanged();
-                swipe_main.setRefreshing(false);
-            }
-        });
-        //上拉
-        swipe_main.setSetLoadlistener(new Refresh.loadListener() {
-            @Override
-            public void load() {
-                swipe_main.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        list.add("我是上拉出来的");
-                        personAdapter.notifyDataSetChanged();
-                        swipe_main.setLoadView(false);
-                    }
-                }, 1500);
-            }
-
-            @Override
-            public void setFootView(boolean loading) {
-                if (loading) {
-                    listview.removeFooterView(view);
-                    listview.addFooterView(view);
-                    listview.setSelection(personAdapter.getCount());
-                } else {
-                    listview.removeFooterView(view);
-                }
-            }
-        });
-
+        fragmentManager = getSupportFragmentManager();
+        btn_address_book.performClick();//模拟一次点击，既进去后选择第一项
 
     }
 
@@ -124,37 +51,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View v) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         switch (v.getId()) {
-            case R.id.btn_conversation:
-                startActivity(new Intent(this, ConversationActivity.class));
-                finish();
-                break;
             case R.id.btn_address_book:
-
+                fragmentTransaction.replace(R.id.fragment, new PersonFragment());
+                break;
+            case R.id.btn_conversation:
+                    fragmentTransaction.replace(R.id.fragment, new ConversationFragment());
                 break;
             case R.id.btn_set:
-                startActivity(new Intent(this, SetActivity.class));
-                finish();
+                    fragmentTransaction.replace(R.id.fragment, new SetFragment());
 
                 break;
-            case R.id.button_add:
-                startActivity(new Intent(this, AddConActivity.class));
-                break;
+
         }
+        fragmentTransaction.commit();
+        fragmentTransaction.addToBackStack(null);
     }
 
-    /**
-     * 获取好友列表
-     */
-    private void getPerson() {
-        try {
-            List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
-            list.add(String.valueOf(usernames));
-            personAdapter.notifyDataSetChanged();
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-        }
-
-        listview.setAdapter(personAdapter);
-    }
 }

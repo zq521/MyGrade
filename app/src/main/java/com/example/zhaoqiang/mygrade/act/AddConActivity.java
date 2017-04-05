@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.zhaoqiang.mygrade.R;
+import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
 
 /**
@@ -45,6 +46,7 @@ public class AddConActivity extends AppCompatActivity {
             }
 
         });
+        addListen();
 
     }
 
@@ -84,6 +86,40 @@ public class AddConActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
+    private void addListen(){
+        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+
+            @Override
+            public void onContactAgreed(String username) {
+                //好友请求被同意
+            }
+
+            @Override
+            public void onContactRefused(String username) {
+                //好友请求被拒绝
+            }
+
+            @Override
+            public void onContactInvited(String username, String reason) {
+                //收到好友邀请
+            }
+
+            @Override
+            public void onContactDeleted(String username) {
+                //被删除时回调此方法
+            }
+
+
+            @Override
+            public void onContactAdded(String username) {
+                //增加了联系人时回调此方法
+            }
+        });
+    }
+
+
 
     public void back(View v) {
         finish();

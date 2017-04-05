@@ -62,7 +62,7 @@ public class ChatAdapter extends BaseAdapter {
         switch (type){
             case TXT:
                 EMTextMessageBody body= (EMTextMessageBody) emMessage.getBody();
-                if (position%2==0){
+                if (emMessage.getFrom().equals(emMessage.getUserName())){
                     holder.chat_other_message.setText(body.getMessage());
                     holder.chat_other_message.setVisibility(View.VISIBLE);
                     holder.chat_other_image.setVisibility(View.VISIBLE);
@@ -77,7 +77,6 @@ public class ChatAdapter extends BaseAdapter {
 
         return convertView;
     }
-
 
 
     class  ViewHolder{

@@ -50,7 +50,7 @@ public class PersonAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_main, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_person, parent, false);
             holder = new ViewHolder();
             holder.main_tv_name = (TextView) convertView.findViewById(R.id.main_tv_name);
             holder.main_iv_avatar = (ImageView) convertView.findViewById(R.id.main_iv_avatar);

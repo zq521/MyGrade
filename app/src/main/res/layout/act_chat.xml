@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="60dp"
             android:background="@drawable/login_btn"
             android:padding="8dp"
             android:text="发送"
@@ -41,12 +41,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_margin="10dp"
             android:layout_toLeftOf="@id/chat_btn_send"
             android:background="#f0f0f0"
             android:hint="请输入内容"
             android:paddingLeft="10dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <ImageButton
+            android:layout_marginTop="7sp"
+            android:background="@drawable/jiahao"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/chat_et_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/spinner2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            />
+
+
     </RelativeLayout>
 
     <ListView

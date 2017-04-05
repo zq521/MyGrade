@@ -8,4 +8,6 @@ package com.example.zhaoqiang.mygrade.callback;
 public interface CallListener {
     void Click(int id);
     void ItemClick(int id);
+    void refChatList();
+
 }

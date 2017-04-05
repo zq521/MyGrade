@@ -45,16 +45,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5sp"
+        android:layout_marginBottom="10sp"
        >
 
         <ImageView
             android:id="@+id/chat_my_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="20sp"
-            android:background="@mipmap/ic_launcher"
+            android:background="@drawable/touxiang"
             android:scaleType="fitXY"
             android:visibility="gone"
             />

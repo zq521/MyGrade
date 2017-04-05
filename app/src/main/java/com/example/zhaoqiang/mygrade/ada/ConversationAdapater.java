@@ -16,6 +16,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -29,10 +30,6 @@ public class ConversationAdapater extends BaseAdapter {
     private CallListener callListener;
     private ArrayList<EMConversation> list;
 
-
-
-
-
     public void setCallListener(CallListener callListener) {
         this.callListener = callListener;
     }
@@ -42,6 +39,15 @@ public class ConversationAdapater extends BaseAdapter {
         this.context = context;
         this.list = list;
 
+    }
+
+
+    public void update(ArrayList<EMConversation> list){
+        if (callListener != null) {
+            callListener.refChatList();
+            this.list=list;
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -67,9 +73,11 @@ public class ConversationAdapater extends BaseAdapter {
             holder = new ViewHolder();
             holder.con_tv_name = (TextView) convertView.findViewById(R.id.con_tv_name);
             holder.con_tv_msg = (TextView) convertView.findViewById(R.id.con_tv_msg);
+            holder.msg_time= (TextView) convertView.findViewById(R.id.msg_time);
             holder.unread_msg_number = (TextView) convertView.findViewById(R.id.unread_msg_number);
             holder.con_image_per_mes = (ImageView) convertView.findViewById(R.id.con_image_per_mes);
             holder.chat_item=convertView.findViewById(R.id.chat_item);
+
             //将Holder存储到convertView中
             convertView.setTag(holder);
         } else {
@@ -81,7 +89,6 @@ public class ConversationAdapater extends BaseAdapter {
         //从当前会话对象中 获取，最后一条消息的对象
         EMMessage latMessage = emConversation.getLastMessage();
         //从最后一次消息对象中，获取该消息的消息类型
-
         EMMessage.Type type = latMessage.getType();
         switch (type) {
             case TXT:
@@ -98,12 +105,13 @@ public class ConversationAdapater extends BaseAdapter {
                 break;
 
         }
+        holder.msg_time.setText(getLastMsgTime(emConversation));
+
         //设置接收消息的名字
         holder.con_tv_name.setText(emConversation.getUserName());
         //设置消息数目
-//        holder.unread_msg_number.setText(emConversation.getUnredMsgCount());
-        //给名字设置点击事件
-
+        holder.unread_msg_number.setText(emConversation.getUnreadMsgCount()+"");
+        //给item设置点击事件
         holder.chat_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,16 +139,55 @@ public class ConversationAdapater extends BaseAdapter {
             public void onClick(View v) {
                 if (callListener != null) {
                     callListener.Click(position);
+                    ((SwipeMenuLayout) finalConvertView).quickClose();
                 }
             }
         });
 
         return convertView;
     }
+    private String getLastMsgTime(EMConversation msg) {
+        //得到最后一条消息的时间
+        long lastTime = msg.getLastMessage().getMsgTime();
+        //距离现在 时间  =  得到当前时间  -   最后一条消息的时间
+        long notTime = new Date().getTime() - lastTime;
+        //将毫秒转换成分钟
+        int m = m2M(notTime);
+        //  判断是否 大于60分钟  若大于转换成小时
+        if (m > 60) {
+            //判断是否 大于24小时  若大于转换天
+            if (m2h(m) > 24) {
+                return h2d(m2h(m)) + "天前";
+            } else {
+                return m2h(m) + "小时前";
+            }
+        } else {
+            //判断是否大于1分钟 如果不是  显示 刚刚
+            if (m > 1) {
+                return m + "分钟前";
+            } else
+                return "刚刚";
+        }
+    }
+
+    //毫秒转分钟
+    private int m2M(long time) {
+        return (int) time / 1000 / 60;
+    }
+
+    //分钟转小时
+    private int m2h(long time) {
+        return (int) (time / 60);
+    }
+
+    //小时转天数
+    private int h2d(long time) {
+        return (int) (time / 24);
+    }
     //内部类
     class ViewHolder {
         private View chat_item;
-        private TextView con_tv_name, con_tv_msg, unread_msg_number;
+        private TextView con_tv_name, con_tv_msg, unread_msg_number,msg_time;
         private ImageView con_image_per_mes;
     }
 
