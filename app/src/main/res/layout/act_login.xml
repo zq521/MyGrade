@@ -29,6 +29,7 @@
         android:layout_height="48dp"
         android:layout_margin="20dp"
         android:background="#fff"
+        android:textStyle="bold"
         android:hint="请输入用户名"
         android:paddingLeft="10dip"
         android:singleLine="true"
@@ -42,6 +43,7 @@
         android:layout_margin="20dp"
         android:background="#fff"
         android:hint="请输入密码"
+        android:textStyle="bold"
         android:inputType="textPassword"
         android:paddingLeft="10dip"
         android:singleLine="true"
@@ -54,7 +56,8 @@
         android:id="@+id/checkBox1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="显示密码" />
+        android:text="显示密码"
+        android:textStyle="bold"/>
 </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,6 +76,7 @@
             android:onClick="register"
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
+            android:textStyle="bold"
             android:text="注册"
             android:textColor="#000"
             android:textSize="18sp" />
@@ -88,6 +92,7 @@
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
             android:text="登陆"
+            android:textStyle="bold"
             android:textColor="#000"
             android:textSize="18sp" />
     </LinearLayout>

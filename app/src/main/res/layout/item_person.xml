@@ -42,6 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="4dp"
+                android:textStyle="bold"
                 android:layout_marginTop="20sp"
                 android:layout_toRightOf="@+id/main_iv_avatar"
                 android:ellipsize="end"
@@ -57,5 +58,6 @@
         android:id="@+id/main_btn_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:text="删除" />
 </com.mcxtzhang.swipemenulib.SwipeMenuLayout>

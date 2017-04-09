@@ -1,8 +1,6 @@
 package com.example.zhaoqiang.mygrade.help;
 
-import com.hyphenate.chat.EMConversation;
-
-import java.util.ArrayList;
+import com.example.zhaoqiang.mygrade.callback.MessageListener;
 
 /**
  * Created by 轩韩子 on 2017/3/31.
@@ -11,8 +9,8 @@ import java.util.ArrayList;
 
 public class MessageManager {
     private static MessageManager messageManager;
-    private ArrayList<EMConversation> list=new ArrayList<>();
 
+    private MessageListener messageListener;
     public static synchronized  MessageManager getInsatance(){
         if (messageManager==null){
             messageManager=new MessageManager();
@@ -20,12 +18,11 @@ public class MessageManager {
            return   messageManager;
     }
 
-    public ArrayList<EMConversation> getChatList() {
-        return list;
+    public MessageListener getMessageListener() {
+        return messageListener;
     }
 
-    public void setChatList(ArrayList<EMConversation> list) {
-        this.list = list;
+    public void setMessageListener(MessageListener messageListener) {
+        this.messageListener = messageListener;
     }
-
 }

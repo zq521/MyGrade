@@ -10,6 +10,12 @@ import android.widget.Button;
 import com.example.zhaoqiang.mygrade.fragment.ConversationFragment;
 import com.example.zhaoqiang.mygrade.fragment.PersonFragment;
 import com.example.zhaoqiang.mygrade.fragment.SetFragment;
+import com.example.zhaoqiang.mygrade.help.MessageManager;
+import com.hyphenate.EMMessageListener;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+
+import java.util.List;
 
 /**
  * Created by 轩韩子 on 2017/3/23.
@@ -17,19 +23,23 @@ import com.example.zhaoqiang.mygrade.fragment.SetFragment;
  * 联系人页面
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,EMMessageListener {
     private Button btn_conversation, btn_address_book, btn_set;
-    private ConversationFragment conversationFragment;
-    private PersonFragment personFragment;
-    private SetFragment setFragment;
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        //添加接受消息监听
+        EMClient.getInstance()
+                .chatManager()
+                .addMessageListener(this);
         init();
+
 
     }
 
@@ -42,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_address_book.setOnClickListener(this);
         btn_set.setOnClickListener(this);
         fragmentManager = getSupportFragmentManager();
-        btn_address_book.performClick();//模拟一次点击，既进去后选择第一项
+        btn_conversation.performClick();//模拟一次点击，既进去后选择第一项
 
     }
 
@@ -51,22 +61,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View v) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+         fragmentTransaction = fragmentManager.beginTransaction();
         switch (v.getId()) {
+            case R.id.btn_conversation:
+                setSelected();
+                btn_conversation.setSelected(true);
+                fragmentTransaction.replace(R.id.fragment, new ConversationFragment());
+                break;
             case R.id.btn_address_book:
+                setSelected();
+                btn_address_book.setSelected(true);
                 fragmentTransaction.replace(R.id.fragment, new PersonFragment());
                 break;
-            case R.id.btn_conversation:
-                    fragmentTransaction.replace(R.id.fragment, new ConversationFragment());
-                break;
             case R.id.btn_set:
-                    fragmentTransaction.replace(R.id.fragment, new SetFragment());
-
+                setSelected();
+                btn_set.setSelected(true);
+                fragmentTransaction.replace(R.id.fragment, new SetFragment());
                 break;
 
         }
-        fragmentTransaction.commit();
+        //将当前的事务添加到了回退栈
         fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
     }
 
+
+
+    //重置所有文本的选中状态
+    private void setSelected() {
+        btn_address_book.setSelected(false);
+        btn_conversation.setSelected(false);
+        btn_set.setSelected(false);
+
+    }
+
+    @Override
+    public void onMessageReceived(List<EMMessage> list) {
+        //调用刷新消息列表的方法
+        MessageManager.getInsatance().getMessageListener().refChatList();
+    }
+
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> list) {
+        //收到透传消息
+    }
+
+    @Override
+    public void onMessageReadAckReceived(List<EMMessage> list) {
+        //收到已送达回执
+    }
+
+    @Override
+    public void onMessageDeliveryAckReceived(List<EMMessage> list) {
+         //收到已送达回执
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage emMessage, Object o) {
+        //消息状态变动
+    }
 }

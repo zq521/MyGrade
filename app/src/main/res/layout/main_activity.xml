@@ -26,9 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/regis_btn"
+            android:background="@drawable/btn_menu_bg"
+            android:textStyle="bold"
             android:text="会话列表"
-            android:textColor="#000"
+            android:textColor="@drawable/btn_menu_text"
             android:textSize="18sp" />
 
         <Button
@@ -36,9 +37,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/regis_btn"
+            android:background="@drawable/btn_menu_bg"
             android:text="通讯录"
-            android:textColor="#000"
+            android:textStyle="bold"
+            android:textColor="@drawable/btn_menu_text"
             android:textSize="18sp" />
 
         <Button
@@ -46,9 +48,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/regis_btn"
+            android:background="@drawable/btn_menu_bg"
             android:text="设置"
-            android:textColor="#000"
+            android:textStyle="bold"
+            android:textColor="@drawable/btn_menu_text"
             android:textSize="18sp" />
     </LinearLayout>
     </LinearLayout>

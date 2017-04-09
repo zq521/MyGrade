@@ -10,6 +10,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="40dp"
         android:background="#fff"
+        android:textStyle="bold"
         android:hint="用户名"
         android:paddingLeft="10dip"
         android:singleLine="true"
@@ -21,6 +22,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
         android:background="#fff"
+        android:textStyle="bold"
         android:hint="密码"
         android:inputType="textPassword"
         android:paddingLeft="10dip"
@@ -34,6 +36,7 @@
         android:layout_marginTop="20dp"
         android:background="#fff"
         android:hint="再次确认密码"
+        android:textStyle="bold"
         android:inputType="textPassword"
         android:paddingLeft="10dip"
         android:singleLine="true"
@@ -49,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:textStyle="bold"
             android:hint="输入验证码" />
 
         <ImageView
@@ -61,7 +65,7 @@
             android:id="@+id/btn_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:textStyle="bold"
             android:text="获得验证码"/>
     </LinearLayout>
 
@@ -84,6 +88,7 @@
             android:onClick="register"
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
+            android:textStyle="bold"
             android:text="注册"
             android:textColor="@android:color/black"
             android:textSize="20sp" />

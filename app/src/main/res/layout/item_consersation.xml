@@ -50,7 +50,8 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="2sp"
                 android:textColor="#000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
@@ -73,6 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4dp"
                     android:ellipsize="end"
+                    android:textStyle="bold"
                     android:singleLine="true"
                     android:textColor="#000"
                     android:textSize="20sp" />
@@ -83,6 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4dp"
                     android:ellipsize="end"
+                    android:textStyle="bold"
                     android:singleLine="true"
                     android:textColor="#8C8C8C"
                     android:textSize="16sp"
@@ -96,12 +99,14 @@
         android:id="@+id/con_btn_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="置顶" />
+        android:text="置顶"
+        android:textStyle="bold"/>
 
     <Button
         android:id="@+id/con_btn_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="删除" />
+        android:text="删除"
+        android:textStyle="bold"/>
 
 </com.mcxtzhang.swipemenulib.SwipeMenuLayout>

@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="添加朋友"
+            android:textStyle="bold"
             android:textColor="#000"
             android:textSize="25sp" />
     </LinearLayout>
@@ -32,6 +33,7 @@
         android:background="#fff"
         android:hint="输入对方账号"
         android:textSize="20sp"
+        android:textStyle="italic"
         android:paddingLeft="10dp" />
 
     <Button
@@ -40,6 +42,7 @@
         android:layout_width="10sp"
         android:layout_height="wrap_content"
         android:background="@drawable/login_btn"
+        android:textStyle="bold"
         android:text="申请"
         android:textColor="#000"
         android:textSize="20sp" />

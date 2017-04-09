@@ -5,42 +5,47 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.ada.ConversationAdapater;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
+import com.example.zhaoqiang.mygrade.callback.MessageListener;
+import com.example.zhaoqiang.mygrade.help.MessageManager;
 import com.example.zhaoqiang.mygrade.help.Refresh;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
-import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMMessage;
 import com.hyphenate.util.NetUtils;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by 轩韩子 on 2017/4/5.
  * at 11:38
+ * 消息列表
  */
 
-public class ConversationFragment extends Fragment implements CallListener {
+public class ConversationFragment extends Fragment implements CallListener, MessageListener {
     private View views;
     private Refresh swipe;
     private ListView listview;
+    private TextView con_intent_text;
     private ConversationAdapater conAda;
+    private static final int NUMBER = 112;
+    private Map<String, EMConversation> conversations;
+    private HashMap<String, String> textMap = new HashMap<>();
     private ArrayList<EMConversation> list = new ArrayList<>();
-    private EMMessageListener msgListener;
-    Map<String, EMConversation> conversations;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,38 +58,42 @@ public class ConversationFragment extends Fragment implements CallListener {
         super.onViewCreated(view, savedInstanceState);
         //初始化控件
         init(view);
-        //接收消息
-        getMessage();
+        //注册 刷新消息列表 监听
+        MessageManager.getInsatance().setMessageListener(this);
         //注册连接状态监听
         EMClient.getInstance().addConnectionListener(new MyConnectionListener());
     }
 
+    /**
+     * 初始化控件
+     *
+     * @param view
+     */
     public void init(View view) {
-        //获取控件
         swipe = (Refresh) view.findViewById(R.id.swipe);
         listview = (ListView) view.findViewById(R.id.listview_con);
-
-        //获取聊天
+        con_intent_text = (TextView) view.findViewById(R.id.con_intent_text);
+        //获取数据源
         getData();
-
         //实例化适配器
         conAda = new ConversationAdapater(getActivity(), list);
         conAda.setCallListener(this);
-
-        //加载foot view布局
-        views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
         //设置适配器
         listview.setAdapter(conAda);
+        //加载foot view布局
+        views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
         //设置上拉和下拉刷新
         setUpAndDown();
     }
 
+    /**
+     * 获取数据源
+     */
     private void getData() {
         conversations = EMClient.getInstance().chatManager().getAllConversations();
-        for (EMConversation em : conversations.values()
-                ) {
+        list.clear();
+        for (EMConversation em : conversations.values()) {
             list.add(em);
-
         }
     }
 
@@ -144,39 +153,8 @@ public class ConversationFragment extends Fragment implements CallListener {
     }
 
     /**
-     * 接收消息
+     * 实现侧滑点击删除
      */
-    private void getMessage() {
-        EMClient.getInstance().chatManager().addMessageListener(msgListener);
-        msgListener = new EMMessageListener() {
-
-            @Override
-            public void onMessageReceived(List<EMMessage> messages) {
-                //收到消息
-            }
-
-            @Override
-            public void onCmdMessageReceived(List<EMMessage> messages) {
-                //收到透传消息
-            }
-
-            @Override
-            public void onMessageReadAckReceived(List<EMMessage> list) {
-                //收到已读回执
-            }
-
-            @Override
-            public void onMessageDeliveryAckReceived(List<EMMessage> list) {
-                //收到已送达回执
-            }
-
-            @Override
-            public void onMessageChanged(EMMessage message, Object change) {
-                //消息状态变动
-            }
-        };
-    }
-
     @Override
     public void Click(int id) {
         EMConversation messages = list.get(id);
@@ -186,49 +164,118 @@ public class ConversationFragment extends Fragment implements CallListener {
         conAda.update(list);
     }
 
+    /**
+     * 跳转到聊天详情页
+     */
     @Override
     public void ItemClick(int id) {
-        startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("username", list.get(id).getUserName()));
+        intentToChat(list.get(id).getUserName());
+
     }
 
+    /**
+     * 携带数据跳转
+     *
+     * @param userName
+     */
+    public void intentToChat(String userName) {
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("userName", userName);
+        if (!TextUtils.isEmpty(textMap.get(userName)))
+            intent.putExtra("text", textMap.get(userName));
+        startActivityForResult(intent, NUMBER);
+    }
+
+    /**
+     * 处理返回结果
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
-    public void refChatList() {
-        getData();
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == -1) {
+            switch (requestCode) {
+                case NUMBER:
+                    textMap.put(data.getStringExtra("username"), data.getStringExtra("text"));
+                    try {
+                        //如果内容为空，则移除存储内容
+                        if (TextUtils.isEmpty(data.getStringExtra("text"))) {
+                            textMap.remove(data.getStringExtra("username"));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //设置
+                    setChatText(textMap);
+                    break;
+            }
+        }
     }
 
+        /**
+         * 置顶
+         */
+        @Override
+        public void top ( int id){
+            list.add(0, list.get(id));
+            // 置顶后listsize增加一 所以要position+1
+            list.remove(id + 1);
+            conAda.update(list);
+
+        }
+
+        /**
+         * 刷新界面
+         */
+        @Override
+        public void refChatList () {
+            getData();
+            conAda.update(list);
+
+        }
+
+        /**
+         * 设置回调
+         */
+
+    public void setChatText(HashMap<String, String> textMap) {
+        conAda.setTextMap(textMap);
+
+
+    }
 
     /**
      * 实现ConnectionListener接口
      */
     public class MyConnectionListener implements EMConnectionListener {
+        //注册一个监听连接状态的listener
         @Override
         public void onConnected() {
 
         }
 
-        //注册一个监听连接状态的listener
         //账号发生异常的提醒
         @Override
         public void onDisconnected(final int error) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (error == EMError.USER_REMOVED) {
-                        Toast.makeText(getActivity(), "显示帐号已经被移除", Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
-                            //new SetActivity().logout();
-                            Toast.makeText(getActivity(), "显示帐号在其他设备登录", Toast.LENGTH_SHORT).show();
-                        } else if (NetUtils.hasNetwork(getActivity())) {
-                            Toast.makeText(getActivity(), "连接不到聊天服务器", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "当前网络不可用，请检查网络设置", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+            if (error == EMError.USER_REMOVED) {
+                con_intent_text.setText("帐号已经被移除");
+                con_intent_text.setVisibility(View.INVISIBLE);
+            } else {
+                if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    //new SetActivity().logout();
+                    con_intent_text.setText("帐号在其他设备登录");
+                    con_intent_text.setVisibility(View.INVISIBLE);
+                } else if (NetUtils.hasNetwork(getActivity())) {
+                    con_intent_text.setText("连接不到聊天服务器");
+                    con_intent_text.setVisibility(View.INVISIBLE);
+                } else {
+                    con_intent_text.setText("当前网络不可用，请检查网络设置");
+                    con_intent_text.setVisibility(View.INVISIBLE);
                 }
-            });
+            }
         }
     }
 

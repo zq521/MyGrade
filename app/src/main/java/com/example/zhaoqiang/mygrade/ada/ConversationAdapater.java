@@ -1,6 +1,7 @@
 package com.example.zhaoqiang.mygrade.ada;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,10 @@ import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 
 /**
@@ -29,27 +30,46 @@ public class ConversationAdapater extends BaseAdapter {
     private Context context;
     private CallListener callListener;
     private ArrayList<EMConversation> list;
+    private HashMap<String, String> textMap = new HashMap<>();
 
+    /**
+     * 设置接口
+     */
     public void setCallListener(CallListener callListener) {
         this.callListener = callListener;
     }
 
+    /**
+     * 刷新adapter方法
+     */
+    public void update(ArrayList<EMConversation> list){
+        this.list=list;
+        notifyDataSetChanged();
+    }
 
+    /**
+     * 构造方法
+     */
     public ConversationAdapater(Context context, ArrayList<EMConversation> list) {
         this.context = context;
         this.list = list;
 
     }
 
-
-    public void update(ArrayList<EMConversation> list){
-        if (callListener != null) {
-            callListener.refChatList();
-            this.list=list;
-            notifyDataSetChanged();
-        }
+    /**
+     *
+     * @param textMap
+     */
+    public void setTextMap(HashMap<String, String> textMap) {
+        this.textMap = textMap;
+        notifyDataSetChanged();
     }
 
+
+    /**
+     * 数目
+     * @return
+     */
     @Override
     public int getCount() {
         return list.size();
@@ -73,10 +93,10 @@ public class ConversationAdapater extends BaseAdapter {
             holder = new ViewHolder();
             holder.con_tv_name = (TextView) convertView.findViewById(R.id.con_tv_name);
             holder.con_tv_msg = (TextView) convertView.findViewById(R.id.con_tv_msg);
-            holder.msg_time= (TextView) convertView.findViewById(R.id.msg_time);
+            holder.msg_time = (TextView) convertView.findViewById(R.id.msg_time);
             holder.unread_msg_number = (TextView) convertView.findViewById(R.id.unread_msg_number);
             holder.con_image_per_mes = (ImageView) convertView.findViewById(R.id.con_image_per_mes);
-            holder.chat_item=convertView.findViewById(R.id.chat_item);
+            holder.chat_item = convertView.findViewById(R.id.chat_item);
 
             //将Holder存储到convertView中
             convertView.setTag(holder);
@@ -88,29 +108,41 @@ public class ConversationAdapater extends BaseAdapter {
         EMConversation emConversation = getItem(position);
         //从当前会话对象中 获取，最后一条消息的对象
         EMMessage latMessage = emConversation.getLastMessage();
-        //从最后一次消息对象中，获取该消息的消息类型
-        EMMessage.Type type = latMessage.getType();
-        switch (type) {
-            case TXT:
-                //获取消息体并强转成文本消息类型体
-                EMTextMessageBody textMessageBody = (EMTextMessageBody) latMessage.getBody();
-                //从消息体中拿到消息内容 并 设置给 控件
-                holder.con_tv_msg.setText(textMessageBody.getMessage());
-                break;
-            case IMAGE:
-                holder.con_tv_msg.setText("[图片]");
-                break;
-            case VIDEO:
-                holder.con_tv_msg.setText("[视频]");
-                break;
+        //判断该用户是否有草稿
+        if (!TextUtils.isEmpty(textMap.get(emConversation.getUserName()))) {
+                holder.con_tv_msg.setText("[草稿]" + textMap.get(emConversation.getUserName()));
+            } else {
+            //从最后一次消息对象中，获取该消息的消息类型
+            EMMessage.Type type = latMessage.getType();
 
+            switch (type) {
+                case TXT:
+                    //获取消息体并强转成文本消息类型体
+                    EMTextMessageBody textMessageBody = (EMTextMessageBody) latMessage.getBody();
+                    //从消息体中拿到消息内容 并 设置给 控件
+                    holder.con_tv_msg.setText(textMessageBody.getMessage());
+                    break;
+                case IMAGE:
+                    holder.con_tv_msg.setText("[图片]");
+                    break;
+                case VIDEO:
+                    holder.con_tv_msg.setText("[视频]");
+                    break;
+
+            }
         }
-        holder.msg_time.setText(getLastMsgTime(emConversation));
-
-        //设置接收消息的名字
+        //设置标题（发送消息的名字）
         holder.con_tv_name.setText(emConversation.getUserName());
+        //设置最后一条时间
+        holder.msg_time.setText(getLastMsgTime(emConversation));
         //设置消息数目
-        holder.unread_msg_number.setText(emConversation.getUnreadMsgCount()+"");
+        if (emConversation==null||emConversation.getUnreadMsgCount()==0){
+            holder.unread_msg_number.setVisibility(View.INVISIBLE);
+        }else {
+            holder.unread_msg_number.setVisibility(View.INVISIBLE);
+            holder.unread_msg_number.setText(emConversation.getUnreadMsgCount() + "");
+        }
+
         //给item设置点击事件
         holder.chat_item.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,15 +154,14 @@ public class ConversationAdapater extends BaseAdapter {
         });
 
         //置顶该列
-        final View finalConvertView = convertView;
         convertView.findViewById(R.id.con_btn_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.add(0, list.get(position));
-                // 置顶后list.size增加一 所以要position+1
-                list.remove(position + 1);
-                notifyDataSetChanged();
-                ((SwipeMenuLayout) finalConvertView).quickClose();
+                if (callListener!=null){
+                    callListener.top(position);
+                }
+
+
             }
         });
         //删除该列
@@ -139,13 +170,19 @@ public class ConversationAdapater extends BaseAdapter {
             public void onClick(View v) {
                 if (callListener != null) {
                     callListener.Click(position);
-                    ((SwipeMenuLayout) finalConvertView).quickClose();
+
                 }
             }
         });
 
         return convertView;
     }
+
+    /**
+     *⌚时间️转换
+     * @param msg
+     * @return
+     */
     private String getLastMsgTime(EMConversation msg) {
         //得到最后一条消息的时间
         long lastTime = msg.getLastMessage().getMsgTime();
@@ -184,10 +221,12 @@ public class ConversationAdapater extends BaseAdapter {
     private int h2d(long time) {
         return (int) (time / 24);
     }
+
+
     //内部类
     class ViewHolder {
         private View chat_item;
-        private TextView con_tv_name, con_tv_msg, unread_msg_number,msg_time;
+        private TextView con_tv_name, con_tv_msg, unread_msg_number, msg_time;
         private ImageView con_image_per_mes;
     }
 

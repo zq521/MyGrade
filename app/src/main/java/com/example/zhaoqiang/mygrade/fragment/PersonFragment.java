@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.ada.PersonAdapter;
 import com.example.zhaoqiang.mygrade.help.Refresh;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         init(view);
         //获取好友列表
-         getPerson();
+        getPerson();
 
     }
 
@@ -120,19 +120,21 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
      * 获取好友列表
      */
     private void getPerson() {
-        try {
-            List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
-            for (String s:usernames
-                 ) {
-                list.add(s);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                    for (String s : usernames
+                            ) {
+                        list.add(s);
+                        listview.setAdapter(personAdapter);
+                    } }catch(Exception e){
+                        Log.v("Lean", e.getMessage());
+                    }
             }
+            }).start();
 
-            personAdapter.notifyDataSetChanged();
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-        }
-
-        listview.setAdapter(personAdapter);
     }
 
     //跳转到添加好友页面
