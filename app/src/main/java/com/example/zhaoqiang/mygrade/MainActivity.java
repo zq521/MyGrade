@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,13 +78,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
+        //从返回栈删除
+        //fragmentManager.popBackStack("需要删除的名字",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         //将当前的事务添加到了回退栈
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
     }
-
-
 
     //重置所有文本的选中状态
     private void setSelected() {

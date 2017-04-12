@@ -57,9 +57,9 @@
     </LinearLayout>
     <fragment
         android:id="@+id/fragment1"
-        android:name="com.example.zhaoqiang.mygrade.fragment.FragmenMent"
+        android:name="com.example.zhaoqiang.mygrade.fragment.DrawFragment"
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        tools:layout="@layout/draw_frag"></fragment>
+        tools:layout="@layout/frag_draw"></fragment>
 </android.support.v4.widget.DrawerLayout>

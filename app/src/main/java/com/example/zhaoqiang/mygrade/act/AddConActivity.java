@@ -1,127 +1,99 @@
 package com.example.zhaoqiang.mygrade.act;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
-import com.hyphenate.EMContactListener;
-import com.hyphenate.chat.EMClient;
+import com.example.zhaoqiang.mygrade.fragment.AddGroupFragment;
+import com.example.zhaoqiang.mygrade.fragment.AddPersonFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by 轩韩子 on 2017/3/24.
  * at 11:24
+ * 加好友主页
  */
 
-public class AddConActivity extends AppCompatActivity {
-    private EditText et_username;
+public class AddConActivity extends AppCompatActivity implements View.OnClickListener {
+    private TextView add_penson, add_group;
     private Button btn_add;
-    private ProgressDialog progressDialog;
+    private EditText et_username;
+    private AddPersonFragment addPersonFragment;
+    private AddGroupFragment addGroupFragment;
+    private FragmentPagerAdapter fragmentPagerAdapter;
+    private ViewPager add_pager;
+    private ArrayList<Fragment> list = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_add_person);
+        setContentView(R.layout.act_add);
+        init();
+        addFragment();
+        pager();
+    }
 
-
-        et_username = (EditText) this.findViewById(R.id.et_username);
-        btn_add = (Button) this.findViewById(R.id.btn_add);
-        btn_add.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                String username = et_username.getText().toString().trim();
-
-                if (TextUtils.isEmpty(username)) {
-                    Toast.makeText(getApplicationContext(), "请输入内容...", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                addContact(username);
-            }
-
-        });
-        addListen();
+    private void init() {
+        add_penson = (TextView) findViewById(R.id.add_penson);
+        add_group = (TextView) findViewById(R.id.add_group);
+        btn_add = (Button) findViewById(R.id.btn_add);
+        add_pager = (ViewPager) findViewById(R.id.add_pager);
+        et_username = (EditText) findViewById(R.id.et_username);
+        add_penson.setOnClickListener(this);
+        add_group.setOnClickListener(this);
+        btn_add.setOnClickListener(this);
 
     }
 
+    private void addFragment() {
+        addPersonFragment = new AddPersonFragment();
+        addGroupFragment = new AddGroupFragment();
 
-    /**
-     * 添加contact
-     *
-     * @param
-     */
+        list.add(addPersonFragment);
+        list.add(addGroupFragment);
 
-
-    public void addContact(final String usernamer) {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("正在查找");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-
-        new Thread(new Runnable() {
-            public void run() {
-
-                try {
-                    EMClient.getInstance().contactManager().addContact(usernamer,"");
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "未找到该联系人", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (final Exception e) {
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "输入有误", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        }).start();
     }
 
-
-    private void addListen(){
-        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
-
+    private void pager() {
+        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
-            public void onContactAgreed(String username) {
-                //好友请求被同意
+            public Fragment getItem(int position) {
+                return list.get(position);
             }
 
             @Override
-            public void onContactRefused(String username) {
-                //好友请求被拒绝
+            public int getCount() {
+                return list.size();
             }
+        };
+        add_pager.setOffscreenPageLimit(2);
+        add_pager.setAdapter(fragmentPagerAdapter);
 
-            @Override
-            public void onContactInvited(String username, String reason) {
-                //收到好友邀请
-            }
-
-            @Override
-            public void onContactDeleted(String username) {
-                //被删除时回调此方法
-            }
-
-
-            @Override
-            public void onContactAdded(String username) {
-                //增加了联系人时回调此方法
-            }
-        });
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_penson:
+
+                break;
+            case R.id.add_group:
+
+                break;
+            case R.id.btn_add:
+
+                break;
+        }
 
 
-    public void back(View v) {
-        finish();
     }
 }

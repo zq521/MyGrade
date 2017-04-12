@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add_penson"
+        android:title="添加好友"
+        app:showAsAction="never"
+        android:orderInCategory="100"/>
+
+    <item
+        android:id="@+id/add_group"
+        android:title="添加群组"
+        app:showAsAction="never"
+        android:orderInCategory="100"/>
+
+</menu>

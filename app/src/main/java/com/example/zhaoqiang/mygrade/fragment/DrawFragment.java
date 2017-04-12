@@ -14,11 +14,11 @@ import com.example.zhaoqiang.mygrade.R;
  * at 16:48
  */
 
-public class FragmenMent extends Fragment{
+public class DrawFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.draw_frag, container, false);
+        View view = inflater.inflate(R.layout.frag_draw, container, false);
         return view;
     }
 

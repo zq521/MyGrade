@@ -14,6 +14,7 @@ import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +88,7 @@ public class ConversationAdapater extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_consersation, parent, false);
             holder = new ViewHolder();
@@ -139,7 +140,7 @@ public class ConversationAdapater extends BaseAdapter {
         if (emConversation==null||emConversation.getUnreadMsgCount()==0){
             holder.unread_msg_number.setVisibility(View.INVISIBLE);
         }else {
-            holder.unread_msg_number.setVisibility(View.INVISIBLE);
+            holder.unread_msg_number.setVisibility(View.VISIBLE);
             holder.unread_msg_number.setText(emConversation.getUnreadMsgCount() + "");
         }
 
@@ -154,12 +155,15 @@ public class ConversationAdapater extends BaseAdapter {
         });
 
         //置顶该列
+        final View finalConvertView = convertView;
         convertView.findViewById(R.id.con_btn_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (callListener!=null){
                     callListener.top(position);
                 }
+                ((SwipeMenuLayout) finalConvertView).quickClose();
+
 
 
             }
@@ -170,6 +174,7 @@ public class ConversationAdapater extends BaseAdapter {
             public void onClick(View v) {
                 if (callListener != null) {
                     callListener.Click(position);
+                    ((SwipeMenuLayout) finalConvertView).quickClose();
 
                 }
             }

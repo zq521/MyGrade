@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
+import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.example.zhaoqiang.mygrade.help.EaseUser;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
@@ -20,13 +21,17 @@ import java.util.ArrayList;
  */
 
 public class PersonAdapter extends BaseAdapter {
+    private CallListener callListener;
     private Context context;
     private ArrayList<String> list = new ArrayList<>();
 
     public PersonAdapter(Context context,ArrayList<String> list) {
         this.context = context;
         this.list = list;
+    }
 
+    public void setCallListener(CallListener callListener) {
+        this.callListener = callListener;
     }
 
     @Override
@@ -37,7 +42,6 @@ public class PersonAdapter extends BaseAdapter {
 
     @Override
     public EaseUser getItem(int position) {
-
         return null;
     }
 
@@ -54,27 +58,30 @@ public class PersonAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.main_tv_name = (TextView) convertView.findViewById(R.id.main_tv_name);
             holder.main_iv_avatar = (ImageView) convertView.findViewById(R.id.main_iv_avatar);
+            holder.penson_item=convertView.findViewById(R.id.penson_item);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         //设置联系人信息
         holder.main_tv_name.setText(list.get(position));
-
-       // 弹出提示框（修改备注)
-        holder.main_tv_name.setOnLongClickListener(new View.OnLongClickListener() {
+        //设置点击事件
+        holder.penson_item.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                return false;
+            public void onClick(View v) {
+                if (callListener!=null){
+                    callListener.ItemClick(position);
+                }
             }
         });
-        //删除该列
+       // 弹出提示框（修改备注)
         final View finalConvertView = convertView;
         convertView.findViewById(R.id.main_btn_remove).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.remove(position);
-                notifyDataSetChanged();
+                       if (callListener!=null){
+                           callListener.Click(position);
+                       }
                 ((SwipeMenuLayout) finalConvertView).quickClose();
 
             }
@@ -83,6 +90,7 @@ public class PersonAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
+        private View penson_item;
         TextView main_tv_name;
         ImageView main_iv_avatar;
 

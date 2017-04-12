@@ -7,6 +7,7 @@
     app:ios="false">
 
     <LinearLayout
+        android:id="@+id/penson_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -59,5 +60,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="删除" />
+        android:text="备注" />
 </com.mcxtzhang.swipemenulib.SwipeMenuLayout>

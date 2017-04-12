@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,61 +20,55 @@
             android:textSize="25sp" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <ListView
+        android:layout_weight="10"
+        android:id="@+id/chat_listView"
+        android:layout_width="match_parent"
+        android:layout_height="407dp"
+        android:layout_below="@+id/title"
+        android:dividerHeight="1dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:id="@+id/re_bottom"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true">
-
-        <Button
-            android:id="@+id/chat_btn_send"
-            android:layout_width="60sp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="60dp"
-            android:background="@drawable/login_btn"
-            android:padding="8dp"
-            android:text="发送"
-            android:textStyle="bold"
-            android:textColor="#000"
-            android:textSize="16sp" />
-
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
         <EditText
+            android:layout_weight="20"
+            android:layout_marginTop="3sp"
             android:id="@+id/chat_et_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@id/chat_btn_send"
             android:background="#f0f0f0"
             android:hint="请输入内容"
-            android:textStyle="italic"
-            android:paddingLeft="10dp"
-            android:textSize="14sp" />
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+        <Button
+            android:layout_weight="20"
+            android:id="@+id/chat_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/login_btn"
+            android:text="发送"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <ImageButton
+            android:layout_weight="1"
             android:id="@+id/chat_btn_jiahao"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="7sp"
-            android:layout_toLeftOf="@id/chat_et_content"
+            android:layout_height="50sp"
             android:background="@drawable/jiahao" />
+    </LinearLayout>
 
-
-    </RelativeLayout>
-
-    <ListView
-        android:id="@+id/chat_listView"
+    <LinearLayout
+        android:id="@+id/message_bottom_fragment_lay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/re_bottom"
-        android:layout_below="@+id/title"
-        android:dividerHeight="1dp" />
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"></LinearLayout>
+</LinearLayout>
+
+

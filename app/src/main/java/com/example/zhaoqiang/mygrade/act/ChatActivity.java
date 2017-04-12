@@ -3,6 +3,8 @@ package com.example.zhaoqiang.mygrade.act;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.ada.ChatAdapter;
+import com.example.zhaoqiang.mygrade.fragment.ImageFragment;
 import com.example.zhaoqiang.mygrade.help.MessageManager;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
@@ -46,6 +49,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton chat_btn_jiahao;
     private TextView chat_tv_toUsername;
     private EMConversation emConversation;
+    ImageFragment imageFragment;
+    FragmentTransaction transaction;
+    FragmentManager fragmentManager;
     private ArrayList<EMMessage> sendMessagelist = new ArrayList<>();
 
 
@@ -57,7 +63,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         EMClient.getInstance().chatManager().addMessageListener(this);
         //初始化控件
         init();
+        InitFragment();
     }
+
+
+    private void InitFragment() {
+        fragmentManager = getSupportFragmentManager();
+        imageFragment = new ImageFragment();
+
+    }
+
 
     /**
      * 初始化控件
@@ -66,7 +81,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         //接收跳转过来的数据
         userName = getIntent().getStringExtra("userName");
         text = getIntent().getStringExtra("text");
-
         chat_btn_send = (Button) findViewById(R.id.chat_btn_send);
         chat_listView = (ListView) findViewById(R.id.chat_listView);
         chat_et_content = (EditText) findViewById(R.id.chat_et_content);
@@ -149,7 +163,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 发送消息
      */
-    private void send() {
+    public void send() {
         String send = chat_et_content.getText().toString();
         if (send.equals("")) {
             Toast.makeText(this, "不能发送空白信息", Toast.LENGTH_SHORT).show();
@@ -191,13 +205,35 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         // menu布局
         popupMenu.getMenuInflater().inflate(R.menu.main, popupMenu.getMenu());
         //设置监听
+
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_image:
+                       if (imageFragment.isAdded()){
+                           transaction=fragmentManager.beginTransaction();
+                           transaction.remove(imageFragment);
+                           transaction.commit();
+                       } else {
+                           transaction = fragmentManager.beginTransaction();
+                           transaction.replace(R.id.message_bottom_fragment_lay, imageFragment);
+                           transaction.commit();
+                       }
+
+                        break;
+                    case R.id.menu_video:
+
+                        break;
+                    case R.id.menu_speak:
+
+                        break;
+                }
 
                 Toast.makeText(ChatActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                 return false;
             }
+
         });
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
@@ -222,6 +258,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 消息收到
+     *
      * @param list
      */
     @Override

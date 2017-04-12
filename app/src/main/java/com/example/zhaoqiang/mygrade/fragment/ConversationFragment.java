@@ -97,7 +97,6 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         }
     }
 
-
     /**
      * 设置上拉和下拉刷新
      */
@@ -262,18 +261,18 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         public void onDisconnected(final int error) {
             if (error == EMError.USER_REMOVED) {
                 con_intent_text.setText("帐号已经被移除");
-                con_intent_text.setVisibility(View.INVISIBLE);
+                con_intent_text.setVisibility(View.VISIBLE);
             } else {
                 if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
                     //new SetActivity().logout();
                     con_intent_text.setText("帐号在其他设备登录");
-                    con_intent_text.setVisibility(View.INVISIBLE);
+                    con_intent_text.setVisibility(View.VISIBLE);
                 } else if (NetUtils.hasNetwork(getActivity())) {
                     con_intent_text.setText("连接不到聊天服务器");
-                    con_intent_text.setVisibility(View.INVISIBLE);
+                    con_intent_text.setVisibility(View.VISIBLE);
                 } else {
                     con_intent_text.setText("当前网络不可用，请检查网络设置");
-                    con_intent_text.setVisibility(View.INVISIBLE);
+                    con_intent_text.setVisibility(View.VISIBLE);
                 }
             }
         }

@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/regis_btn"
         android:orientation="horizontal"
-        android:weightSum="1"
-        >
+        android:weightSum="1">
+
         <ImageButton
             android:layout_width="40sp"
             android:layout_height="40sp"
@@ -24,25 +24,24 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10sp"
             android:layout_marginLeft="80sp"
             android:layout_marginTop="10sp"
-            android:layout_marginBottom="10sp"
-            android:text="联系人"
-            android:textStyle="bold"
+            android:text="通讯录"
             android:textColor="#000"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button_add"
             android:layout_width="60sp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="80sp"
             android:background="@drawable/regis_btn"
             android:text="添加"
-            android:layout_marginTop="5sp"
-            android:textStyle="bold"
             android:textColor="#000"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,16 +51,46 @@
 
         <EditText
             android:layout_width="300sp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="搜索"
-            android:textStyle="italic"/>
+            android:textStyle="italic" />
+
         <Button
             android:id="@+id/btn_soso_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:background="@drawable/login_btn"
-            android:text="搜索"/>
+            android:text="搜索"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_menu_bg"
+            android:gravity="center"
+            android:text="好友"
+            android:textColor="@drawable/btn_menu_text"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_menu_bg"
+            android:gravity="center"
+            android:text="群组"
+            android:textColor="@drawable/btn_menu_text"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
     <com.example.zhaoqiang.mygrade.help.Refresh
@@ -74,8 +103,8 @@
         <ListView
             android:id="@+id/listview_main"
             android:layout_width="wrap_content"
-            android:dividerHeight="3dp"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="wrap_content"
+            android:dividerHeight="3dp"></ListView>
 
     </com.example.zhaoqiang.mygrade.help.Refresh>
 </LinearLayout>

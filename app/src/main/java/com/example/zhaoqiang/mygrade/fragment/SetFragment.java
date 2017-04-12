@@ -135,17 +135,14 @@ public class SetFragment extends Fragment implements View.OnClickListener{
     }
     //登出
     public void logout() {
-
         EMClient.getInstance().logout(false, new EMCallBack() {
             @Override
             public void onSuccess() {
-                new Thread(new Runnable() {
-                    public void run() {
                         startActivity(new Intent(getActivity(), LoginActivity.class));
                         getActivity().finish();
-                        Toast.makeText(getActivity(), "退出成功", Toast.LENGTH_SHORT).show();
-                    }
-                });
+
+
+
             }
 
             @Override

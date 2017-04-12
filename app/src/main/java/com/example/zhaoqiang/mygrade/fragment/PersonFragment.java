@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -17,6 +16,7 @@ import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.act.AddConActivity;
 import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.ada.PersonAdapter;
+import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.example.zhaoqiang.mygrade.help.Refresh;
 import com.hyphenate.chat.EMClient;
 
@@ -28,13 +28,14 @@ import java.util.List;
  * at 13:54
  */
 
-public class PersonFragment extends Fragment implements View.OnClickListener {
+public class PersonFragment extends Fragment implements View.OnClickListener, CallListener {
     private View views;
     private Refresh swipe_main;
     protected ListView listview;
     private PersonAdapter personAdapter;
     protected ArrayList<String> list = new ArrayList<>();
     private Button button_add;
+    String userName;
 
     @Nullable
     @Override
@@ -47,8 +48,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
-        //获取好友列表
-        getPerson();
+
 
     }
 
@@ -59,21 +59,15 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         button_add.setOnClickListener(this);
         swipe_main = (Refresh) view.findViewById(R.id.swipe_main);
         listview = (ListView) view.findViewById(R.id.listview_main);
+        //获取好友列表
+        getPerson();
         personAdapter = new PersonAdapter(getActivity(), list);
+        personAdapter.setCallListener(this);
+        listview.setAdapter(personAdapter);
         //加载foot view布局
         views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
-
         setUpAndDown();
 
-        //item点击事件
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                startActivity(new Intent(getActivity(), ChatActivity.class));
-            }
-
-        });
     }
 
 
@@ -82,7 +76,6 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
         swipe_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                list.add(0, "我是下拉出来的");
                 personAdapter.notifyDataSetChanged();
                 swipe_main.setRefreshing(false);
             }
@@ -128,18 +121,39 @@ public class PersonFragment extends Fragment implements View.OnClickListener {
                     for (String s : usernames
                             ) {
                         list.add(s);
-                        listview.setAdapter(personAdapter);
-                    } }catch(Exception e){
-                        Log.v("Lean", e.getMessage());
                     }
+                } catch (Exception e) {
+                    Log.v("Lean", e.getMessage());
+                }
             }
-            }).start();
+        }).start();
 
     }
 
-    //跳转到添加好友页面
+    //跳转到添加页面
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
         startActivity(new Intent(getActivity(), AddConActivity.class));
+    }
+
+    /*
+    修改备注
+     */
+    @Override
+    public void Click(int id) {
+
+    }
+
+    /*
+    跳转到聊天详情页
+     */
+    @Override
+    public void ItemClick(int id) {
+     startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("userName",userName));
+    }
+
+    @Override
+    public void top(int id) {
+
     }
 }
