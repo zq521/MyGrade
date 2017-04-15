@@ -1,6 +1,6 @@
 package com.example.zhaoqiang.mygrade.help;
 
-import com.example.zhaoqiang.mygrade.callback.MessageListener;
+import com.example.zhaoqiang.mygrade.callback.MessageListListener;
 
 /**
  * Created by 轩韩子 on 2017/3/31.
@@ -10,7 +10,7 @@ import com.example.zhaoqiang.mygrade.callback.MessageListener;
 public class MessageManager {
     private static MessageManager messageManager;
 
-    private MessageListener messageListener;
+    private MessageListListener messageListListener;
     public static synchronized  MessageManager getInsatance(){
         if (messageManager==null){
             messageManager=new MessageManager();
@@ -18,11 +18,11 @@ public class MessageManager {
            return   messageManager;
     }
 
-    public MessageListener getMessageListener() {
-        return messageListener;
+    public MessageListListener getMessageListener() {
+        return messageListListener;
     }
 
-    public void setMessageListener(MessageListener messageListener) {
-        this.messageListener = messageListener;
+    public void setMessageListener(MessageListListener messageListListener) {
+        this.messageListListener = messageListListener;
     }
 }

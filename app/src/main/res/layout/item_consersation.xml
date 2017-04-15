@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <com.example.zhaoqiang.mygrade.help.NenoTextview
                     android:id="@+id/con_tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
                     android:textColor="#000"
                     android:textSize="20sp" />
 
-                <TextView
+                <com.example.zhaoqiang.mygrade.help.NenoTextview
                     android:id="@+id/con_tv_msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -1,41 +1,35 @@
 package com.example.zhaoqiang.mygrade.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
-import com.example.zhaoqiang.mygrade.act.AddConActivity;
-import com.example.zhaoqiang.mygrade.act.ChatActivity;
-import com.example.zhaoqiang.mygrade.ada.PersonAdapter;
-import com.example.zhaoqiang.mygrade.callback.CallListener;
-import com.example.zhaoqiang.mygrade.help.Refresh;
+import com.hyphenate.EMContactListener;
+import com.hyphenate.EMGroupChangeListener;
 import com.hyphenate.chat.EMClient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by 轩韩子 on 2017/4/5.
  * at 13:54
+ * 通讯录
  */
 
-public class PersonFragment extends Fragment implements View.OnClickListener, CallListener {
-    private View views;
-    private Refresh swipe_main;
-    protected ListView listview;
-    private PersonAdapter personAdapter;
-    protected ArrayList<String> list = new ArrayList<>();
-    private Button button_add;
-    String userName;
+public class PersonFragment extends Fragment implements View.OnClickListener, EMContactListener, EMGroupChangeListener {
+    private PersonListFragment personListFragment;
+    private GroupListFragment groupListFragment;
+    private FragmentPagerAdapter fragmentPagerAdapter;
+    private TextView tv_penson, tv_group;
+    private ViewPager add_pager;
+    private ArrayList<Fragment> list = new ArrayList<Fragment>();
 
     @Nullable
     @Override
@@ -47,113 +41,162 @@ public class PersonFragment extends Fragment implements View.OnClickListener, Ca
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //监听好友状态事件
+        EMClient.getInstance().contactManager().setContactListener(this);
+        //监听群组状态事件
+        EMClient.getInstance().groupManager().addGroupChangeListener(this);
+        // 初始化控件
         init(view);
 
-
     }
 
-    //初始化控件
+    /*
+    初始化控件
+     */
     public void init(View view) {
-        listview = (ListView) view.findViewById(R.id.listview_main);
-        button_add = (Button) view.findViewById(R.id.button_add);
-        button_add.setOnClickListener(this);
-        swipe_main = (Refresh) view.findViewById(R.id.swipe_main);
-        listview = (ListView) view.findViewById(R.id.listview_main);
-        //获取好友列表
-        getPerson();
-        personAdapter = new PersonAdapter(getActivity(), list);
-        personAdapter.setCallListener(this);
-        listview.setAdapter(personAdapter);
-        //加载foot view布局
-        views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
-        setUpAndDown();
-
-    }
-
-
-    private void setUpAndDown() {
-        //下拉
-        swipe_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                personAdapter.notifyDataSetChanged();
-                swipe_main.setRefreshing(false);
-            }
-        });
-//        //上拉
-//        swipe_main.setSetLoadlistener(new Refresh.loadListener() {
-//            @Override
-//            public void load() {
-//                swipe_main.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        list.add("我是上拉出来的");
-//                        personAdapter.notifyDataSetChanged();
-//                        swipe_main.setLoadView(false);
-//                    }
-//                }, 1500);
-//            }
-//
-//            @Override
-//            public void setFootView(boolean loading) {
-//                if (loading) {
-//                    listview.removeFooterView(views);
-//                    listview.addFooterView(views);
-//                    listview.setSelection(personAdapter.getCount());
-//                } else {
-//                    listview.removeFooterView(views);
-//                }
-//            }
-//        });
-//
-
-    }
-
-    /**
-     * 获取好友列表
-     */
-    private void getPerson() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
-                    for (String s : usernames
-                            ) {
-                        list.add(s);
-                    }
-                } catch (Exception e) {
-                    Log.v("Lean", e.getMessage());
-                }
-            }
-        }).start();
-
-    }
-
-    //跳转到添加页面
-    @Override
-    public void onClick(View view) {
-        startActivity(new Intent(getActivity(), AddConActivity.class));
+        tv_penson = (TextView) view.findViewById(R.id.tv_penson);
+        tv_group = (TextView) view.findViewById(R.id.tv_group);
+        add_pager = (ViewPager) view.findViewById(R.id.add_pager);
+        tv_penson.setOnClickListener(this);
+        tv_group.setOnClickListener(this);
+        //加载fragment
+        addFragment();
+        //设置滑动适配器
+        pagerAdapter();
     }
 
     /*
-    修改备注
+    加载fragment
      */
-    @Override
-    public void Click(int id) {
+    private void addFragment() {
+        personListFragment = new PersonListFragment();
+        groupListFragment = new GroupListFragment();
 
+        list.add(personListFragment);
+        list.add(groupListFragment);
     }
 
     /*
-    跳转到聊天详情页
+    设置滑动适配器
+     */
+    private void pagerAdapter() {
+        fragmentPagerAdapter = new FragmentPagerAdapter(getChildFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return list.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return list.size();
+            }
+
+        };
+        add_pager.setAdapter(fragmentPagerAdapter);
+        add_pager.setCurrentItem(0);
+    }
+
+    /*
+    重置所有文本的选中状态
+     */
+    private void setSelected() {
+        tv_penson.setSelected(false);
+        tv_group.setSelected(false);
+    }
+
+    /*
+    点击事件
      */
     @Override
-    public void ItemClick(int id) {
-     startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("userName",userName));
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_penson:
+                setSelected();
+                tv_penson.setSelected(true);
+                add_pager.setCurrentItem(0);
+                break;
+            case R.id.tv_group:
+                setSelected();
+                tv_group.setSelected(true);
+                add_pager.setCurrentItem(1);
+                break;
+        }
+    }
+
+    /*
+    好友监听
+     */
+    @Override
+    public void onContactAgreed(String username) {
+        //好友请求被同意
     }
 
     @Override
-    public void top(int id) {
+    public void onContactRefused(String username) {
+        //好友请求被拒绝
+    }
+
+    @Override
+    public void onContactInvited(String username, String reason) {
+        //收到好友邀请
+    }
+
+    @Override
+    public void onContactDeleted(String username) {
+        //被删除时回调此方法
+    }
+
+
+    @Override
+    public void onContactAdded(String username) {
+        //增加了联系人时回调此方法
+    }
+
+    /*
+    群组监听
+     */
+    @Override
+    public void onUserRemoved(String groupId, String groupName) {
+        //当前用户被管理员移除出群组
+    }
+
+    @Override
+    public void onGroupDestroyed(String s, String s1) {
+
+    }
+
+    @Override
+    public void onAutoAcceptInvitationFromGroup(String s, String s1, String s2) {
+
+    }
+
+    @Override
+    public void onInvitationReceived(String groupId, String groupName, String inviter, String reason) {
+        //收到加入群组的邀请
+    }
+
+    @Override
+    public void onInvitationDeclined(String groupId, String invitee, String reason) {
+        //群组邀请被拒绝
+    }
+
+    @Override
+    public void onApplicationReceived(String groupId, String groupName, String applyer, String reason) {
+        //收到加群申请
+    }
+
+    @Override
+    public void onApplicationAccept(String groupId, String groupName, String accepter) {
+        //加群申请被同意
+    }
+
+    @Override
+    public void onApplicationDeclined(String groupId, String groupName, String decliner, String reason) {
+        // 加群申请被拒绝
+    }
+
+    @Override
+    public void onInvitationAccepted(String s, String s1, String s2) {
 
     }
 }

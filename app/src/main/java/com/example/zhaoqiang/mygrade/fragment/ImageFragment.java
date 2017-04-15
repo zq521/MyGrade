@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.zhaoqiang.mygrade.R;
+import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.ada.ImageAdapter;
 import com.example.zhaoqiang.mygrade.help.FileUtils;
 
@@ -26,29 +27,30 @@ import java.util.HashSet;
 public class ImageFragment extends Fragment implements View.OnClickListener {
     private RecyclerView menu_image_recycler;
     private Button menu_btn_send_image;
-    private ArrayList<String> list=new ArrayList<>();
+    private ArrayList<String> list = new ArrayList<>();
     private ImageAdapter imageAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.menu_image,container,false);
+        return inflater.inflate(R.layout.menu_image, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        list= FileUtils.getAllImg(getActivity());
+        list = FileUtils.getAllImg(getActivity());
         init(view);
     }
 
-    private void init(View view){
-        menu_image_recycler= (RecyclerView) view.findViewById(R.id.menu_image_recycler);
-        menu_btn_send_image= (Button) view.findViewById(R.id.menu_btn_send_image);
+    private void init(View view) {
+        menu_image_recycler = (RecyclerView) view.findViewById(R.id.menu_image_recycler);
+        menu_btn_send_image = (Button) view.findViewById(R.id.menu_btn_send_image);
         menu_btn_send_image.setOnClickListener(this);
-        imageAdapter=new ImageAdapter(getActivity(),list);
-
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getActivity());
+        imageAdapter = new ImageAdapter(getActivity(), list);
+        //线性布局管理器  设置 水平滚动
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         menu_image_recycler.setLayoutManager(linearLayoutManager);
@@ -59,11 +61,19 @@ public class ImageFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        HashSet<String> checkList = new HashSet<>();
-        for (String s:checkList){
-
-
-            Log.e("checkList",s);
+        switch (v.getId()) {
+            //获取容器activity对象
+            case R.id.menu_btn_send_image:
+                //获取选中的所有图片途径
+                HashSet<String> checkList =imageAdapter.getCheckList();
+                //获取容器activity对象
+                ChatActivity chatActivity = (ChatActivity) getActivity();
+                for (String s : checkList) {
+                    //调用activity中的发送图片方法
+                    chatActivity.sendImage(s, false);
+                    Log.e("checkList", s);
+                }
+                break;
         }
     }
 }

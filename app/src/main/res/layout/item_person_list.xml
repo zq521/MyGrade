@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:ios="false">
+
+        <RelativeLayout
+            android:id="@+id/penson_item"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:duplicateParentState="true">
+
+            <ImageView
+                android:id="@+id/person_iv_avatar"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="11dp"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
+
+            <com.example.zhaoqiang.mygrade.help.NenoTextview
+                android:id="@+id/person_tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="20sp"
+                android:layout_toRightOf="@+id/person_iv_avatar"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    <Button
+        android:id="@+id/main_btn_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="备注"
+        android:textStyle="bold" />
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

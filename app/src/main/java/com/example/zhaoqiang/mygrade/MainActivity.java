@@ -1,11 +1,19 @@
 package com.example.zhaoqiang.mygrade;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.zhaoqiang.mygrade.fragment.ConversationFragment;
 import com.example.zhaoqiang.mygrade.fragment.PersonFragment;
@@ -14,6 +22,7 @@ import com.example.zhaoqiang.mygrade.help.MessageManager;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.List;
 
@@ -23,9 +32,9 @@ import java.util.List;
  * 联系人页面
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,EMMessageListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EMMessageListener {
     private Button btn_conversation, btn_address_book, btn_set;
-    private FragmentManager fragmentManager;
+    FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
     @Override
@@ -41,7 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //初始化控件
+    /*
+    初始化控件
+     */
     public void init() {
         btn_conversation = (Button) findViewById(R.id.btn_conversation);
         btn_address_book = (Button) findViewById(R.id.btn_address_book);
@@ -50,28 +61,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_address_book.setOnClickListener(this);
         btn_set.setOnClickListener(this);
         fragmentManager = getSupportFragmentManager();
-        btn_conversation.performClick();//模拟一次点击，既进去后选择第一项
+        btn_address_book.performClick();//模拟一次点击，既进去后选择第一项
 
     }
 
-    /**
-     * 点击事件
+    /*
+     点击事件
      */
     @Override
     public void onClick(View v) {
-         fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        try {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.geren);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //就是你自己定义的actionbar样式
+//            getSupportActionBar().setCustomView(R.layout.act_chat);
+//            getSupportActionBar().getDisplayOptions(DISPLAY_SERVICE);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         switch (v.getId()) {
             case R.id.btn_conversation:
+                getSupportActionBar().setTitle("会话列表");
                 setSelected();
                 btn_conversation.setSelected(true);
                 fragmentTransaction.replace(R.id.fragment, new ConversationFragment());
                 break;
             case R.id.btn_address_book:
+                getSupportActionBar().setTitle("通讯录");
                 setSelected();
                 btn_address_book.setSelected(true);
                 fragmentTransaction.replace(R.id.fragment, new PersonFragment());
                 break;
             case R.id.btn_set:
+                getSupportActionBar().setTitle("设置");
                 setSelected();
                 btn_set.setSelected(true);
                 fragmentTransaction.replace(R.id.fragment, new SetFragment());
@@ -86,7 +111,132 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //重置所有文本的选中状态
+    /*
+    标题点击事件
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                break;
+            case R.id.add_penson:
+                add();
+                ab.setPositiveButton("加人", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //申请联系人
+                        addPerson();
+                    }
+                }).show();
+                break;
+            case R.id.add_group:
+                add();
+                ab.setPositiveButton("加群", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //申请加群
+                        addGroup();
+                    }
+                }).show();
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //提示框内的控件
+    EditText add_et_number, add_et_reason;
+    String toAddUsername;
+    String toAddGroup;
+    String reason;
+    AlertDialog.Builder ab;
+
+    /*
+    添加提示框
+     */
+    private void add() {
+        ab = new AlertDialog.Builder(this);
+        View mView = LayoutInflater.from(this).inflate(R.layout.add_dialog, null);
+        add_et_number = (EditText) mView.findViewById(R.id.add_et_number);
+        add_et_reason = (EditText) mView.findViewById(R.id.add_et_reason);
+        //得到输入框内容
+        reason = add_et_reason.getText().toString();
+        ab.setTitle("添加")
+                .setView(mView)
+                .setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, "取消~", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /*
+  申请联系人
+   */
+    private void addPerson() {
+        toAddUsername = add_et_number.getText().toString();
+        if (toAddUsername.isEmpty()) {
+            Toast.makeText(MainActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    //参数为要添加的好友的username和添加理由
+                    EMClient.getInstance().contactManager().addContact(toAddUsername, reason);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        Toast.makeText(MainActivity.this, "申请成功", Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    /*
+        申请加群
+         */
+    private void addGroup() {
+        toAddGroup = add_et_number.getText().toString();
+        if (toAddGroup.isEmpty()) {
+            Toast.makeText(MainActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().joinGroup(toAddGroup);
+                    //需要申请和验证才能加入的，即group.isMembersOnly()为true，调用下面方法
+                    EMClient.getInstance().groupManager().applyJoinToGroup(toAddUsername, reason);
+
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        Toast.makeText(MainActivity.this, "申请成功", Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    /*
+        标题点击事件
+         */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = new MenuInflater(this);
+        menuInflater.inflate(R.menu.add_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /*
+        重置所有按钮的选中状态
+         */
     private void setSelected() {
         btn_address_book.setSelected(false);
         btn_conversation.setSelected(false);
@@ -112,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onMessageDeliveryAckReceived(List<EMMessage> list) {
-         //收到已送达回执
+        //收到已送达回执
     }
 
     @Override

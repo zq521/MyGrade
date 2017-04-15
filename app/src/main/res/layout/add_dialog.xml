@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/add_et_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:ems="20"
+            android:hint="请输入账号"
+            android:paddingLeft="10dp"
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+        <EditText
+            android:layout_marginTop="5sp"
+            android:id="@+id/add_et_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:ems="20"
+            android:hint="请输入理由"
+            android:paddingLeft="10dp"
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+</LinearLayout>

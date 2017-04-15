@@ -2,6 +2,8 @@ package com.example.zhaoqiang.mygrade.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +20,7 @@ import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.ada.ConversationAdapater;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
-import com.example.zhaoqiang.mygrade.callback.MessageListener;
+import com.example.zhaoqiang.mygrade.callback.MessageListListener;
 import com.example.zhaoqiang.mygrade.help.MessageManager;
 import com.example.zhaoqiang.mygrade.help.Refresh;
 import com.hyphenate.EMConnectionListener;
@@ -36,16 +39,24 @@ import java.util.Map;
  * 消息列表
  */
 
-public class ConversationFragment extends Fragment implements CallListener, MessageListener {
+public class ConversationFragment extends Fragment implements CallListener, MessageListListener {
     private View views;
     private Refresh swipe;
     private ListView listview;
+    private ImageView ic_error_black;
     private TextView con_intent_text;
-    private ConversationAdapater conAda;
+    private ConversationAdapater conversationAdapater;
     private static final int NUMBER = 112;
     private Map<String, EMConversation> conversations;
     private HashMap<String, String> textMap = new HashMap<>();
     private ArrayList<EMConversation> list = new ArrayList<>();
+
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            conversationAdapater.notifyDataSetChanged();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,29 +75,31 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         EMClient.getInstance().addConnectionListener(new MyConnectionListener());
     }
 
-    /**
+    /*
      * 初始化控件
-     *
      * @param view
      */
     public void init(View view) {
         swipe = (Refresh) view.findViewById(R.id.swipe);
         listview = (ListView) view.findViewById(R.id.listview_con);
         con_intent_text = (TextView) view.findViewById(R.id.con_intent_text);
+        ic_error_black= (ImageView) view.findViewById(R.id.ic_error_black);
         //获取数据源
         getData();
         //实例化适配器
-        conAda = new ConversationAdapater(getActivity(), list);
-        conAda.setCallListener(this);
+        conversationAdapater = new ConversationAdapater(getActivity(), list);
+        conversationAdapater.setCallListener(this);
         //设置适配器
-        listview.setAdapter(conAda);
+        listview.setAdapter(conversationAdapater);
         //加载foot view布局
         views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
         //设置上拉和下拉刷新
+        conversationAdapater.notifyDataSetChanged();
         setUpAndDown();
+
     }
 
-    /**
+    /*
      * 获取数据源
      */
     private void getData() {
@@ -95,9 +108,10 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         for (EMConversation em : conversations.values()) {
             list.add(em);
         }
+
     }
 
-    /**
+    /*
      * 设置上拉和下拉刷新
      */
     private void setUpAndDown() {
@@ -110,7 +124,7 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        conAda.notifyDataSetChanged();
+                        conversationAdapater.notifyDataSetChanged();
                         //关闭下拉进度
                         swipe.setRefreshing(false);
                     }
@@ -151,7 +165,7 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
 //        });
     }
 
-    /**
+    /*
      * 实现侧滑点击删除
      */
     @Override
@@ -160,10 +174,10 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         //删除和某个user会话，如果需要保留聊天记录，传false
         EMClient.getInstance().chatManager().deleteConversation(messages.getUserName(), false);
         list.remove(id);
-        conAda.update(list);
+        conversationAdapater.update(list);
     }
 
-    /**
+    /*
      * 跳转到聊天详情页
      */
     @Override
@@ -172,7 +186,7 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
 
     }
 
-    /**
+    /*
      * 携带数据跳转
      *
      * @param userName
@@ -185,7 +199,7 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         startActivityForResult(intent, NUMBER);
     }
 
-    /**
+    /*
      * 处理返回结果
      *
      * @param requestCode
@@ -214,39 +228,38 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         }
     }
 
-        /**
-         * 置顶
-         */
-        @Override
-        public void top ( int id){
-            list.add(0, list.get(id));
-            // 置顶后listsize增加一 所以要position+1
-            list.remove(id + 1);
-            conAda.update(list);
+    /*
+     * 置顶
+     */
+    @Override
+    public void top(int id) {
+        list.add(0, list.get(id));
+        // 置顶后listsize增加一 所以要position+1
+        list.remove(id + 1);
+        conversationAdapater.update(list);
 
-        }
+    }
 
-        /**
-         * 刷新界面
-         */
-        @Override
-        public void refChatList () {
-            getData();
-            conAda.update(list);
+    /*
+     * 刷新界面
+     */
+    @Override
+    public void refChatList() {
+        handler.sendMessage(new Message());
 
-        }
+    }
 
-        /**
-         * 设置回调
-         */
+    /*
+     * 设置回调
+     */
 
     public void setChatText(HashMap<String, String> textMap) {
-        conAda.setTextMap(textMap);
+        conversationAdapater.setTextMap(textMap);
 
 
     }
 
-    /**
+    /*
      * 实现ConnectionListener接口
      */
     public class MyConnectionListener implements EMConnectionListener {
@@ -255,25 +268,33 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         public void onConnected() {
 
         }
-
         //账号发生异常的提醒
         @Override
         public void onDisconnected(final int error) {
-            if (error == EMError.USER_REMOVED) {
-                con_intent_text.setText("帐号已经被移除");
-                con_intent_text.setVisibility(View.VISIBLE);
-            } else {
-                if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
-                    //new SetActivity().logout();
-                    con_intent_text.setText("帐号在其他设备登录");
+
+            try {
+                if (error == EMError.USER_REMOVED) {
+                    con_intent_text.setText("帐号已经被移除");
                     con_intent_text.setVisibility(View.VISIBLE);
-                } else if (NetUtils.hasNetwork(getActivity())) {
-                    con_intent_text.setText("连接不到聊天服务器");
-                    con_intent_text.setVisibility(View.VISIBLE);
+                    ic_error_black.setVisibility(View.VISIBLE);
                 } else {
-                    con_intent_text.setText("当前网络不可用，请检查网络设置");
-                    con_intent_text.setVisibility(View.VISIBLE);
+                    if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                        //new SetActivity().logout();
+                        con_intent_text.setText("帐号在其他设备登录");
+                        con_intent_text.setVisibility(View.VISIBLE);
+                        ic_error_black.setVisibility(View.VISIBLE);
+                    } else if (NetUtils.hasNetwork(getActivity())) {
+                        con_intent_text.setText("连接不到聊天服务器");
+                        con_intent_text.setVisibility(View.VISIBLE);
+                        ic_error_black.setVisibility(View.VISIBLE);
+                    } else {
+                        con_intent_text.setText("当前网络不可用，请检查网络设置");
+                        con_intent_text.setVisibility(View.VISIBLE);
+                        ic_error_black.setVisibility(View.VISIBLE);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

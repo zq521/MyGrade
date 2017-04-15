@@ -2,7 +2,6 @@ package com.example.zhaoqiang.mygrade.act;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -33,9 +32,9 @@ import static android.text.TextUtils.isEmpty;
  */
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
     private String user, pwd;
     private CheckBox checkBox;
-    private SharedPreferences sp;
     private boolean login = false;
     private EditText username, password;
     private ProDialog proDialog;
@@ -68,10 +67,14 @@ public class LoginActivity extends AppCompatActivity {
     private void logBefore() {
         // 如果登录成功过，直接进入主页面
         if (EMClient.getInstance().isLoggedInBefore()) {
-            // ** 免登陆情况 加载所有本地群和会话
-            //加上的话保证进了主页面会话和群组都已经load完毕
-            EMClient.getInstance().groupManager().loadAllGroups();
-            EMClient.getInstance().chatManager().loadAllConversations();
+            try {
+                // ** 免登陆情况 加载所有本地群和会话
+                //加上的话保证进了主页面会话和群组都已经load完毕
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             login = true;
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             return;
@@ -102,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         //获取输入的数据
         user = username.getText().toString();
         pwd = password.getText().toString();
-        Log.e(user,pwd);
+        Log.e(user, pwd);
         //判断密码正确错误
         if (isEmpty(user)) {
             Toast.makeText(LoginActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
@@ -121,6 +124,11 @@ public class LoginActivity extends AppCompatActivity {
         EMClient.getInstance().login(user, pwd, new EMCallBack() {
             @Override
             public void onSuccess() {
+                Log.d(TAG, "登录聊天服务器成功！");
+                //储存账号
+                SPUtils.setLastUserName(LoginActivity.this, user);
+                SPUtils.setlastPassword(LoginActivity.this, pwd);
+
                 // 进入主页面
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
@@ -135,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(final int code, final String message) {
-                Log.e("code","message="+message);
+                Log.e("code", "message=" + message);
                 runOnUiThread(new Runnable() {
                     public void run() {
                         proDialog.cancel();

@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/item_image_select_img"
-        android:layout_width="150sp"
-        android:layout_height="200sp" />
+        android:layout_width="200sp"
+        android:layout_height="wrap_content" />
 
     <CheckBox
         android:id="@+id/item_image_select_check"

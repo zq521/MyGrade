@@ -7,6 +7,7 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * Created by 轩韩子 on 2017/3/31.
  * at 15:43
+ * 储存密码和账号
  */
 
 public class SPUtils {
@@ -32,7 +33,7 @@ public class SPUtils {
 
     public static void setlastPassword(Context context, String passWord) {
 
-        context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+        context.getSharedPreferences(SP_PASS, MODE_PRIVATE)
                 .edit()
                 .putString(LAST_PASSWORD, passWord)
                 .apply();
@@ -40,7 +41,7 @@ public class SPUtils {
 
     public static String getLastPassword(Context context) {
 
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE)
+        return context.getSharedPreferences(SP_PASS, MODE_PRIVATE)
                 .getString(LAST_PASSWORD, "");
 
     }

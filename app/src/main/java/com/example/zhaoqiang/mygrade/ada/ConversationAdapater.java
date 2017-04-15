@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
+import com.example.zhaoqiang.mygrade.help.NenoTextview;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
@@ -33,22 +35,22 @@ public class ConversationAdapater extends BaseAdapter {
     private ArrayList<EMConversation> list;
     private HashMap<String, String> textMap = new HashMap<>();
 
-    /**
+    /*
      * 设置接口
      */
     public void setCallListener(CallListener callListener) {
         this.callListener = callListener;
     }
 
-    /**
+    /*
      * 刷新adapter方法
      */
-    public void update(ArrayList<EMConversation> list){
-        this.list=list;
+    public void update(ArrayList<EMConversation> list) {
+        this.list = list;
         notifyDataSetChanged();
     }
 
-    /**
+    /*
      * 构造方法
      */
     public ConversationAdapater(Context context, ArrayList<EMConversation> list) {
@@ -57,8 +59,7 @@ public class ConversationAdapater extends BaseAdapter {
 
     }
 
-    /**
-     *
+    /*
      * @param textMap
      */
     public void setTextMap(HashMap<String, String> textMap) {
@@ -67,7 +68,7 @@ public class ConversationAdapater extends BaseAdapter {
     }
 
 
-    /**
+    /*
      * 数目
      * @return
      */
@@ -92,7 +93,7 @@ public class ConversationAdapater extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_consersation, parent, false);
             holder = new ViewHolder();
-            holder.con_tv_name = (TextView) convertView.findViewById(R.id.con_tv_name);
+            holder.con_tv_name = (NenoTextview) convertView.findViewById(R.id.con_tv_name);
             holder.con_tv_msg = (TextView) convertView.findViewById(R.id.con_tv_msg);
             holder.msg_time = (TextView) convertView.findViewById(R.id.msg_time);
             holder.unread_msg_number = (TextView) convertView.findViewById(R.id.unread_msg_number);
@@ -111,8 +112,8 @@ public class ConversationAdapater extends BaseAdapter {
         EMMessage latMessage = emConversation.getLastMessage();
         //判断该用户是否有草稿
         if (!TextUtils.isEmpty(textMap.get(emConversation.getUserName()))) {
-                holder.con_tv_msg.setText("[草稿]" + textMap.get(emConversation.getUserName()));
-            } else {
+            holder.con_tv_msg.setText("[草稿]" + textMap.get(emConversation.getUserName()));
+        } else {
             //从最后一次消息对象中，获取该消息的消息类型
             EMMessage.Type type = latMessage.getType();
 
@@ -137,11 +138,15 @@ public class ConversationAdapater extends BaseAdapter {
         //设置最后一条时间
         holder.msg_time.setText(getLastMsgTime(emConversation));
         //设置消息数目
-        if (emConversation==null||emConversation.getUnreadMsgCount()==0){
+        EMConversation conversation = EMClient
+                .getInstance()
+                .chatManager()
+                .getConversation(emConversation.getUserName());
+        if (emConversation == null || emConversation.getUnreadMsgCount() == 0) {
             holder.unread_msg_number.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             holder.unread_msg_number.setVisibility(View.VISIBLE);
-            holder.unread_msg_number.setText(emConversation.getUnreadMsgCount() + "");
+            holder.unread_msg_number.setText(conversation.getUnreadMsgCount() + "");
         }
 
         //给item设置点击事件
@@ -159,12 +164,10 @@ public class ConversationAdapater extends BaseAdapter {
         convertView.findViewById(R.id.con_btn_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (callListener!=null){
+                if (callListener != null) {
                     callListener.top(position);
                 }
                 ((SwipeMenuLayout) finalConvertView).quickClose();
-
-
 
             }
         });
@@ -175,7 +178,6 @@ public class ConversationAdapater extends BaseAdapter {
                 if (callListener != null) {
                     callListener.Click(position);
                     ((SwipeMenuLayout) finalConvertView).quickClose();
-
                 }
             }
         });
@@ -183,7 +185,7 @@ public class ConversationAdapater extends BaseAdapter {
         return convertView;
     }
 
-    /**
+    /*
      *⌚时间️转换
      * @param msg
      * @return
@@ -228,10 +230,13 @@ public class ConversationAdapater extends BaseAdapter {
     }
 
 
-    //内部类
+    /*
+    内部类
+     */
     class ViewHolder {
         private View chat_item;
-        private TextView con_tv_name, con_tv_msg, unread_msg_number, msg_time;
+        private TextView  con_tv_msg,unread_msg_number, msg_time;
+        private NenoTextview con_tv_name ;
         private ImageView con_image_per_mes;
     }
 
