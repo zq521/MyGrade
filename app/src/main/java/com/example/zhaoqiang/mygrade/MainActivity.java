@@ -16,9 +16,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.zhaoqiang.mygrade.fragment.ConversationFragment;
-import com.example.zhaoqiang.mygrade.fragment.PersonFragment;
+import com.example.zhaoqiang.mygrade.fragment.PersonListFragment;
 import com.example.zhaoqiang.mygrade.fragment.SetFragment;
 import com.example.zhaoqiang.mygrade.help.MessageManager;
+import com.hyphenate.EMContactListener;
+import com.hyphenate.EMGroupChangeListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
@@ -32,7 +34,7 @@ import java.util.List;
  * 联系人页面
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, EMMessageListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EMMessageListener, EMContactListener, EMGroupChangeListener{
     private Button btn_conversation, btn_address_book, btn_set;
     FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -42,11 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         //添加接受消息监听
-        EMClient.getInstance()
-                .chatManager()
-                .addMessageListener(this);
+        EMClient.getInstance().chatManager().addMessageListener(this);
+        //监听好友状态事件
+        EMClient.getInstance().contactManager().setContactListener(this);
+        //监听群组状态事件
+        EMClient.getInstance().groupManager().addGroupChangeListener(this);
         init();
-
 
     }
 
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.zoom_enter,R.anim.zoom_exit);
         try {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.geren);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getSupportActionBar().setTitle("通讯录");
                 setSelected();
                 btn_address_book.setSelected(true);
-                fragmentTransaction.replace(R.id.fragment, new PersonFragment());
+                fragmentTransaction.replace(R.id.fragment, new PersonListFragment());
                 break;
             case R.id.btn_set:
                 getSupportActionBar().setTitle("设置");
@@ -268,5 +272,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onMessageChanged(EMMessage emMessage, Object o) {
         //消息状态变动
+    }
+
+    /*
+   好友监听
+    */
+    @Override
+    public void onContactAgreed(String username) {
+        //好友请求被同意
+    }
+
+    @Override
+    public void onContactRefused(String username) {
+        //好友请求被拒绝
+    }
+
+    @Override
+    public void onContactInvited(String username, String reason) {
+        //收到好友邀请
+    }
+
+    @Override
+    public void onContactDeleted(String username) {
+        //被删除时回调此方法
+    }
+
+
+    @Override
+    public void onContactAdded(String username) {
+        //增加了联系人时回调此方法
+    }
+
+    /*
+    群组监听
+     */
+    @Override
+    public void onUserRemoved(String groupId, String groupName) {
+        //当前用户被管理员移除出群组
+    }
+
+    @Override
+    public void onGroupDestroyed(String s, String s1) {
+
+    }
+
+    @Override
+    public void onAutoAcceptInvitationFromGroup(String s, String s1, String s2) {
+
+    }
+
+    @Override
+    public void onInvitationReceived(String groupId, String groupName, String inviter, String reason) {
+        //收到加入群组的邀请
+    }
+
+    @Override
+    public void onInvitationDeclined(String groupId, String invitee, String reason) {
+        //群组邀请被拒绝
+    }
+
+    @Override
+    public void onApplicationReceived(String groupId, String groupName, String applyer, String reason) {
+        //收到加群申请
+    }
+
+    @Override
+    public void onApplicationAccept(String groupId, String groupName, String accepter) {
+        //加群申请被同意
+    }
+
+    @Override
+    public void onApplicationDeclined(String groupId, String groupName, String decliner, String reason) {
+        // 加群申请被拒绝
+    }
+
+    @Override
+    public void onInvitationAccepted(String s, String s1, String s2) {
+
     }
 }

@@ -3,18 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
+    <include android:id="@+id/layout_search" layout="@layout/head_search" />
+     </LinearLayout>
 
     <com.example.zhaoqiang.mygrade.help.Refresh
         android:id="@+id/swipe_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/penson_recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:dividerHeight="3dp"/>
+            android:layout_height="match_parent"
+            android:dividerHeight="3dp" />
+
     </com.example.zhaoqiang.mygrade.help.Refresh>
 
 </LinearLayout>

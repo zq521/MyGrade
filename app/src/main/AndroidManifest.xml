@@ -21,7 +21,8 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <!--相机权限-->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -72,6 +73,8 @@
             android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".act.ChatActivity"/>
+        <activity android:name=".act.GroupListActivity"
+            />
 
     </application>
 

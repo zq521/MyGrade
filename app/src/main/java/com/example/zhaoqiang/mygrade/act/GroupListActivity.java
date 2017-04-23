@@ -1,16 +1,15 @@
-package com.example.zhaoqiang.mygrade.fragment;
+package com.example.zhaoqiang.mygrade.act;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.ada.GroupListAdapter;
@@ -28,12 +27,12 @@ import java.util.List;
  * 群组列表
  */
 
-public class GroupListFragment extends Fragment implements CallListener {
+public class GroupListActivity extends AppCompatActivity implements CallListener {
     private View views;
     private Refresh swipe_main;
     private RecyclerView group_recycler;
-    private ArrayList<EMGroup> list = new ArrayList<>();
     private GroupListAdapter groupListAdapter;
+    private ArrayList<EMGroup> list = new ArrayList<>();
 
     private Handler handler=new Handler(){
         @Override
@@ -42,29 +41,22 @@ public class GroupListFragment extends Fragment implements CallListener {
         }
     };
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.frag_group_list, container, false);
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.act_group_list);
+         init();
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-    }
-
-    private void init(View view) {
-        swipe_main = (Refresh) view.findViewById(R.id.swipe_main);
-        group_recycler = (RecyclerView) view.findViewById(R.id.group_recycler);
+    private void init() {
+        swipe_main = (Refresh) findViewById(R.id.swipe_main);
+        group_recycler = (RecyclerView) findViewById(R.id.group_recycler);
         //获取数据
         getData();
-        groupListAdapter = new GroupListAdapter(getActivity(), list);
+        groupListAdapter = new GroupListAdapter(this,list);
         groupListAdapter.setCallListener(this);
         //线性布局管理器  设置 水平滚动
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         group_recycler.setLayoutManager(linearLayoutManager);
@@ -72,7 +64,7 @@ public class GroupListFragment extends Fragment implements CallListener {
         groupListAdapter.notifyDataSetChanged();
 
         //加载foot view布局
-        views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
+        views = LayoutInflater.from(this).inflate(R.layout.progress_up_item, null, false);
         setUpAndDown();
     }
 

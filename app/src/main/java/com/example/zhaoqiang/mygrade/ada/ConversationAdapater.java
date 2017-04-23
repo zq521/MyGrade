@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.example.zhaoqiang.mygrade.help.NenoTextview;
-import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
@@ -21,6 +20,7 @@ import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
 
 
 /**
@@ -108,46 +108,46 @@ public class ConversationAdapater extends BaseAdapter {
 
         //获取当前item的数据内容
         EMConversation emConversation = getItem(position);
-        //从当前会话对象中 获取，最后一条消息的对象
-        EMMessage latMessage = emConversation.getLastMessage();
+        //设置消息数目
+        if (emConversation.getUnreadMsgCount()>0) {
+            holder.unread_msg_number.setText(String.valueOf(emConversation.getUnreadMsgCount()));
+            holder.unread_msg_number.setVisibility(View.VISIBLE);
+
+        } else {
+            holder.unread_msg_number.setVisibility(View.INVISIBLE);
+        }
+
         //判断该用户是否有草稿
         if (!TextUtils.isEmpty(textMap.get(emConversation.getUserName()))) {
             holder.con_tv_msg.setText("[草稿]" + textMap.get(emConversation.getUserName()));
         } else {
-            //从最后一次消息对象中，获取该消息的消息类型
-            EMMessage.Type type = latMessage.getType();
+            if (emConversation.getAllMsgCount()!=0) {
+                //从当前会话对象中 获取，最后一条消息的对象
+                EMMessage latMessage = emConversation.getLastMessage();
+                //从最后一次消息对象中，获取该消息的消息类型
+                EMMessage.Type type = latMessage.getType();
 
-            switch (type) {
-                case TXT:
-                    //获取消息体并强转成文本消息类型体
-                    EMTextMessageBody textMessageBody = (EMTextMessageBody) latMessage.getBody();
-                    //从消息体中拿到消息内容 并 设置给 控件
-                    holder.con_tv_msg.setText(textMessageBody.getMessage());
-                    break;
-                case IMAGE:
-                    holder.con_tv_msg.setText("[图片]");
-                    break;
-                case VIDEO:
-                    holder.con_tv_msg.setText("[视频]");
-                    break;
+                switch (type) {
+                    case TXT:
+                        //获取消息体并强转成文本消息类型体
+                        EMTextMessageBody textMessageBody = (EMTextMessageBody) latMessage.getBody();
+                        //从消息体中拿到消息内容 并 设置给 控件
+                        holder.con_tv_msg.setText(textMessageBody.getMessage());
+                        break;
+                    case IMAGE:
+                        holder.con_tv_msg.setText("[图片]");
+                        break;
+                    case VIDEO:
+                        holder.con_tv_msg.setText("[视频]");
+                        break;
 
+                }
             }
         }
         //设置标题（发送消息的名字）
         holder.con_tv_name.setText(emConversation.getUserName());
         //设置最后一条时间
         holder.msg_time.setText(getLastMsgTime(emConversation));
-        //设置消息数目
-        EMConversation conversation = EMClient
-                .getInstance()
-                .chatManager()
-                .getConversation(emConversation.getUserName());
-        if (emConversation == null || emConversation.getUnreadMsgCount() == 0) {
-            holder.unread_msg_number.setVisibility(View.INVISIBLE);
-        } else {
-            holder.unread_msg_number.setVisibility(View.VISIBLE);
-            holder.unread_msg_number.setText(conversation.getUnreadMsgCount() + "");
-        }
 
         //给item设置点击事件
         holder.chat_item.setOnClickListener(new View.OnClickListener() {

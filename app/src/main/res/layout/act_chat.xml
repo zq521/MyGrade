@@ -17,7 +17,7 @@
         android:id="@+id/re_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_marginBottom="5sp">
         <EditText
             android:layout_weight="20"
             android:layout_marginTop="3sp"
@@ -37,7 +37,7 @@
             android:background="@drawable/login_btn"
             android:text="发送"
             android:textColor="#000"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <ImageButton

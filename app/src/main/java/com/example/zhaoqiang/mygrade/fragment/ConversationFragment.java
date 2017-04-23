@@ -56,6 +56,7 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         public void handleMessage(Message msg) {
             conversationAdapater.notifyDataSetChanged();
         }
+
     };
 
     @Override
@@ -73,6 +74,8 @@ public class ConversationFragment extends Fragment implements CallListener, Mess
         MessageManager.getInsatance().setMessageListener(this);
         //注册连接状态监听
         EMClient.getInstance().addConnectionListener(new MyConnectionListener());
+
+
     }
 
     /*

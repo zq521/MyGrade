@@ -12,9 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.act.ChatActivity;
+import com.example.zhaoqiang.mygrade.act.GroupListActivity;
 import com.example.zhaoqiang.mygrade.ada.PersonListAdapter;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.example.zhaoqiang.mygrade.help.Refresh;
@@ -31,6 +33,7 @@ import java.util.List;
 
 public class PersonListFragment extends Fragment implements View.OnClickListener, CallListener {
     private View views;
+    private TextView new_person,group;
     private Refresh swipe_main;
     private RecyclerView penson_recycler;
     private PersonListAdapter personListAdapter;
@@ -52,12 +55,15 @@ public class PersonListFragment extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         init(view);
 
     }
 
     private void init(View view) {
+        new_person= (TextView) view.findViewById(R.id.new_person);
+        group= (TextView) view.findViewById(R.id.group);
+        new_person.setOnClickListener(this);
+        group.setOnClickListener(this);
         swipe_main = (Refresh) view.findViewById(R.id.swipe_main);
         penson_recycler = (RecyclerView) view.findViewById(R.id.penson_recycler);
         //获取好友列表
@@ -72,9 +78,11 @@ public class PersonListFragment extends Fragment implements View.OnClickListener
         penson_recycler.setLayoutManager(linearLayoutManager);
         penson_recycler.setAdapter(personListAdapter);
 
+
         //加载foot view布局
         views = LayoutInflater.from(getActivity()).inflate(R.layout.progress_up_item, null, false);
         setUpAndDown();
+
     }
 
 
@@ -82,6 +90,8 @@ public class PersonListFragment extends Fragment implements View.OnClickListener
     上拉和下拉刷新
      */
     private void setUpAndDown() {
+        //设置刷新旋转颜色
+        swipe_main.setColorSchemeResources(R.color.colorPrimary);
         //下拉
         swipe_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -138,7 +148,6 @@ public class PersonListFragment extends Fragment implements View.OnClickListener
                 handler.sendMessage(new Message());
             }
         }).start();
-
     }
 
     /*
@@ -146,6 +155,15 @@ public class PersonListFragment extends Fragment implements View.OnClickListener
      */
     @Override
     public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.new_person:
+
+                break;
+            case R.id.group:
+                startActivity(new Intent(getActivity(),GroupListActivity.class));
+                break;
+
+        }
 
     }
 

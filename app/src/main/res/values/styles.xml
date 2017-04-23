@@ -6,9 +6,16 @@
         <item name="colorPrimary">#000</item>
         <item name="colorPrimaryDark">#000</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/Mystylre</item>
         <!--隐藏标题栏-->
         <!--item name="windowNoTitle">true</item-->
     </style>
+    
+    <style name="Mystylre">
+        <item name="android:activityOpenEnterAnimation">@anim/zoom_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/zoom_exit</item>
+    </style>
+
 
     <style name="Xhz" parent="Theme.AppCompat.Dialog">
         <!--是否显示阴影-->

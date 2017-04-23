@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/txt_search"
+        android:layout_width="fill_parent"
+        android:layout_height="33dp"
+        android:layout_margin="15dp"
+        android:background="@mipmap/search_ba"
+        android:drawableLeft="@mipmap/search_icon"
+        android:drawablePadding="10dp"
+        android:gravity="center|left"
+        android:hint="@string/search"
+        android:paddingLeft="20dp"
+        android:singleLine="true"
+        android:textColor="@color/black1" />
+
+    <LinearLayout
+        android:id="@+id/addfriend"
+        android:layout_width="match_parent"
+        android:layout_height="55.0dip"
+        android:background="@drawable/set_item_frag"
+        android:paddingLeft="15dip">
+
+        <ImageView
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/new_person"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="13dp"
+            android:singleLine="true"
+            android:text="新的朋友"
+            android:textColor="#000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffeeeeee" />
+
+    <LinearLayout
+        android:id="@+id/layout_group"
+        android:layout_width="match_parent"
+        android:layout_height="55.0dip"
+        android:background="@drawable/set_item_frag"
+        android:paddingLeft="15dip">
+
+        <ImageView
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:singleLine="true"
+            android:text="群聊"
+            android:textColor="#000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -5,18 +5,19 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/item_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10sp">
 
         <ImageView
             android:id="@+id/chat_other_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="20sp"
-            android:background="@mipmap/ic_launcher"
+            android:background="@drawable/yuantounv"
             android:scaleType="fitXY"
             android:visibility="gone" />
 
@@ -47,6 +48,7 @@
             android:layout_marginLeft="20sp"
             android:layout_toRightOf="@id/chat_other_image"
             android:visibility="gone" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -62,7 +64,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="20sp"
-            android:background="@drawable/touxiang"
+            android:background="@drawable/yuantounan"
             android:scaleType="fitXY"
             android:visibility="gone" />
 
@@ -84,6 +86,7 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
+
         <ImageView
             android:layout_marginRight="20sp"
             android:layout_toLeftOf="@+id/chat_my_image"
@@ -93,4 +96,7 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+
+
+
 </LinearLayout>

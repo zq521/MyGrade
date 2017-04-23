@@ -18,6 +18,7 @@ import java.util.HashSet;
 /**
  * Created by 轩韩子 on 2017/4/10.
  * at 14:58
+ * 本地图片选择页适配器
  */
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder>{
