@@ -62,7 +62,6 @@ public class ImageFragment extends Fragment implements View.OnClickListener {
         menu_image_recycler = (RecyclerView) view.findViewById(R.id.menu_image_recycler);
         menu_btn_send_image = (Button) view.findViewById(R.id.menu_btn_send_image);
         camera_image = (ImageView) view.findViewById(R.id.camera_image);
-
         camera_image.setOnClickListener(this);
         menu_btn_send_image.setOnClickListener(this);
 

@@ -10,6 +10,7 @@ import java.util.Random;
 /**
  * Created by 轩韩子 on 2017/3/27.
  * at 18:42
+ * 验证码生成类
  */
 
 public class CodeUtils {

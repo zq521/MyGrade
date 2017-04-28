@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.example.zhaoqiang.mygrade.fragment.ConversationFragment;
 import com.example.zhaoqiang.mygrade.fragment.PersonListFragment;
 import com.example.zhaoqiang.mygrade.fragment.SetFragment;
-import com.example.zhaoqiang.mygrade.help.MessageManager;
+import com.example.zhaoqiang.mygrade.magnager.MessageManager;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.EMGroupChangeListener;
 import com.hyphenate.EMMessageListener;

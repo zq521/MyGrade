@@ -3,7 +3,11 @@ package com.example.zhaoqiang.mygrade.ada;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.act.Baseactivity;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.example.zhaoqiang.mygrade.help.ProDialog;
+import com.example.zhaoqiang.mygrade.help.SmileUtils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMImageMessageBody;
@@ -26,6 +31,8 @@ import com.hyphenate.chat.EMVideoMessageBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -35,6 +42,7 @@ import java.util.HashMap;
  */
 
 public class ChatAdapter extends BaseAdapter {
+
     private CallListener callListener;
     private Context context;
     private ProDialog proDialog;
@@ -210,15 +218,56 @@ public class ChatAdapter extends BaseAdapter {
     */
     private void txtMessage(ViewHolder holder, EMMessage emMessage) {
         EMTextMessageBody body = (EMTextMessageBody) emMessage.getBody();
+        String message = body.getMessage();
+        SpannableString spa = getSpannableString(message);
         if (emMessage.getFrom().equals(emMessage.getUserName())) {
-            holder.chat_other_message.setText(body.getMessage());
+            holder.chat_other_message.setText(spa);
             holder.chat_other_message.setVisibility(View.VISIBLE);
             holder.chat_other_image.setVisibility(View.VISIBLE);
         } else {
-            holder.chat_my_message.setText(body.getMessage());
+            holder.chat_my_message.setText(spa);
+            //链接
+           // holder.chat_my_message.setMovementMethod(LinkMovementMethod.getInstance());
             holder.chat_my_message.setVisibility(View.VISIBLE);
             holder.chat_my_image.setVisibility(View.VISIBLE);
         }
+    }
+     /*
+     🏷️表情匹配
+      */
+    @NonNull
+    private SpannableString getSpannableString(String message) {
+        SpannableString spa = new SpannableString(message);
+        //正则表达式匹配字符串里是否有表情
+        String zhengze = "\\[[^\\]]+\\]";
+        //通过传入的正则表达式生成一个Pattern
+        Pattern sinaPatten = Pattern.compile(zhengze, Pattern.CASE_INSENSITIVE);
+
+        Matcher matcher = sinaPatten.matcher(spa);
+        //遍历
+        while (matcher.find()) {
+            //拿到当前的结果
+            String key = matcher.group();
+            //拿到当前开始下标
+            int start = matcher.start();
+            //结束下标
+            int indexEnd = start + key.length();
+            // 判断是否为空
+            try {
+                if (SmileUtils.getImg(key) == 0) {
+                    continue;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+            //设置资源
+            spa.setSpan(new ImageSpan(context, SmileUtils.getImg(key))
+                    , start
+                    , indexEnd
+                    , Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return spa;
     }
 
     /*

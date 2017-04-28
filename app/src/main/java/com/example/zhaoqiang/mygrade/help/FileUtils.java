@@ -9,6 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by 轩韩子 on 2017/4/10.
  * at 11:35
+ * 图片管理器
  */
 
 public class FileUtils {

@@ -18,4 +18,10 @@
         android:title="语音"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_emjeo"
+        android:orderInCategory="100"
+        android:title="表情"
+        app:showAsAction="never" />
+
 </menu>

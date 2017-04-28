@@ -21,7 +21,7 @@ import com.example.zhaoqiang.mygrade.act.ChatActivity;
 import com.example.zhaoqiang.mygrade.ada.ConversationAdapater;
 import com.example.zhaoqiang.mygrade.callback.CallListener;
 import com.example.zhaoqiang.mygrade.callback.MessageListListener;
-import com.example.zhaoqiang.mygrade.help.MessageManager;
+import com.example.zhaoqiang.mygrade.magnager.MessageManager;
 import com.example.zhaoqiang.mygrade.help.Refresh;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;

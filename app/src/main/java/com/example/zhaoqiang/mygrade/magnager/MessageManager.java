@@ -1,4 +1,4 @@
-package com.example.zhaoqiang.mygrade.help;
+package com.example.zhaoqiang.mygrade.magnager;
 
 import com.example.zhaoqiang.mygrade.callback.MessageListListener;
 

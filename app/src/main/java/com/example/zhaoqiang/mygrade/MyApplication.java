@@ -3,6 +3,7 @@ package com.example.zhaoqiang.mygrade;
 import android.app.Application;
 import android.os.Environment;
 
+import com.example.zhaoqiang.mygrade.help.SmileUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 
@@ -25,6 +26,8 @@ public class MyApplication extends Application {
 
         initSDK();
         initDown();
+        SmileUtils.setImg();
+
     }
 
     private void initSDK() {

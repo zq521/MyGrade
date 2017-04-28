@@ -31,8 +31,9 @@ import android.widget.Toast;
 import com.example.zhaoqiang.mygrade.R;
 import com.example.zhaoqiang.mygrade.ada.ChatAdapter;
 import com.example.zhaoqiang.mygrade.callback.MessageListListener;
+import com.example.zhaoqiang.mygrade.fragment.EmojiFragment;
 import com.example.zhaoqiang.mygrade.fragment.ImageFragment;
-import com.example.zhaoqiang.mygrade.help.MessageManager;
+import com.example.zhaoqiang.mygrade.magnager.MessageManager;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
@@ -60,7 +61,7 @@ import static org.wlf.filedownloader.FileDownloader.registerDownloadStatusListen
  */
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener, EMMessageListener, MessageListListener, OnFileDownloadStatusListener, OnDownloadFileChangeListener {
-    String newPath=Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator + "FileDownloader";
+    String newPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "FileDownloader";
     private static final int OPEN_VIDEO = 102;
     private String text;
     private String userName;
@@ -71,6 +72,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton chat_btn_jiahao;
     private EMConversation emConversation;
     private ImageFragment imageFragment;
+    private EmojiFragment emjoeFragment;
     private FragmentTransaction transaction;
     private FragmentManager fragmentManager;
     private ArrayList<EMMessage> sendMessagelist = new ArrayList<>();
@@ -256,6 +258,22 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.id.menu_speak:
                         break;
+
+                    case R.id.menu_emjeo:
+                        //判断是否打开
+                        if (emjoeFragment.isAdded()) {
+                            transaction = fragmentManager.beginTransaction();
+                            transaction.remove(emjoeFragment);
+                            transaction.commit();
+                            fragmentManager.popBackStackImmediate("emjoeFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        } else {
+                            transaction = fragmentManager.beginTransaction();
+                            transaction.replace(R.id.message_bottom_fragment_lay, emjoeFragment);
+                            transaction.addToBackStack("emjoeFragment");
+                            transaction.commit();
+                        }
+
+                        break;
                 }
                 Toast.makeText(ChatActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                 return false;
@@ -291,14 +309,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     MediaMetadataRetriever mediaRecorder = new MediaMetadataRetriever();
                     //设置数据源
                     mediaRecorder.setDataSource(path);
-                     //获取某一帧 图像，并写入文件
-                    File file1 =creatImage(mediaRecorder.getFrameAtTime(1000));
-                     //释放资源
+                    //获取某一帧 图像，并写入文件
+                    File file1 = creatImage(mediaRecorder.getFrameAtTime(1000));
+                    //释放资源
                     mediaPlayer.release();
                     mediaRecorder.release();
                     EMMessage videoMsg = EMMessage.createVideoSendMessage(
-                             path                        //视频路径
-                            ,file1.getAbsolutePath()    //视频预览图片路径
+                            path                        //视频路径
+                            , file1.getAbsolutePath()    //视频预览图片路径
                             , duration //"视频长度"
                             , userName);//用户名
                     //发送视频
@@ -312,7 +330,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private File creatImage(Bitmap bitmap) {
         //获得根目录
-        File  file = new File(Environment.getExternalStorageDirectory()
+        File file = new File(Environment.getExternalStorageDirectory()
                 , System.currentTimeMillis() + ".jpg");
         try {
             //开启文件的输出流
@@ -373,7 +391,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         //移除会话
         EMClient.getInstance().chatManager().removeMessageListener(this);
-       //取消下载监听
+        //取消下载监听
         FileDownloader.unregisterDownloadFileChangeListener(this);
     }
 
@@ -387,7 +405,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         this.sendMessagelist.addAll(list);
         handler.sendMessage(new Message());
         //本地缩略图路径的视频消息集合
-        ArrayList<EMMessage> list1=new ArrayList<>();
+        ArrayList<EMMessage> list1 = new ArrayList<>();
         //遍历接收到的消息
         for (EMMessage msg : list
                 ) {
@@ -397,11 +415,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 //                    获取消息体
                     EMVideoMessageBody body2 = (EMVideoMessageBody) msg.getBody();
                     //文件名
-                    String name= System.currentTimeMillis()+".jpg";
+                    String name = System.currentTimeMillis() + ".jpg";
                     //下载视频缩略图
-                    FileDownloader.createAndStart(body2.getThumbnailUrl(),newPath,name);
+                    FileDownloader.createAndStart(body2.getThumbnailUrl(), newPath, name);
                     //把本地路径设置给消息体
-                    body2.setLocalThumb(newPath+"/"+name);
+                    body2.setLocalThumb(newPath + "/" + name);
                     //把消息体添加放到 消息对象中
                     msg.addBody(body2);
                     //把修改过来数据对象添加到集合中
@@ -472,12 +490,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
     /*
-    加载图库fragment
+    加载fragment
      */
 
     private void InitFragment() {
         fragmentManager = getSupportFragmentManager();
         imageFragment = new ImageFragment();
+        emjoeFragment = new EmojiFragment();
+
 
     }
 
@@ -520,7 +540,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onFileDownloadStatusCompleted(DownloadFileInfo downloadFileInfo) {
-        Toast.makeText(this,"下载成功",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "下载成功", Toast.LENGTH_SHORT).show();
         // 下载完成
         chatAdapter.notifyDataSetChanged();
     }
